@@ -154,13 +154,13 @@ kbd {
 	margin-bottom: 0.4em;
 	padding: 1px 8px;
 	border: #CCC 1px solid;
-	color: #666;
-	text-shadow: #FFF 0 1px 0;
+	color: #FFF;
+	text-shadow: #CCC 0 1px 0;
 	font-size: 0.9em;
 	font-weight: 700;
 	background: #F4F4F4;
 	border-radius: 4px;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 1px 0 0 #fff inset;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 1px 0 0 #CCC inset;
 }
 
 @media only screen and (max-width: 900px) {
