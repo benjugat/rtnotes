@@ -224,7 +224,7 @@ nav > ul {
 	padding: $space / 2 0;
 
 	& + ul {
-		border-top: 1px solid rgba(0, 0, 0, 0.075);
+		border-top: 1px solid rgba(255, 255, 255, 0.808);
 	}
 }
 
@@ -253,7 +253,7 @@ nav > ul {
 	&.current > a,
 	> a:active,
 	> a:hover {
-		color: #111;
+		color: #f5f2f2;
 	}
 
 	&.top-level > a {
