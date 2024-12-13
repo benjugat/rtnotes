@@ -13,3 +13,16 @@ To install ChatApp on your device:
 3. Select **Install**
 
 ![](//placehold.it/800x600)
+
+```cpp
+// variables used for GetIfForwardTable
+    DWORD dwSize = 0;
+    DWORD dwRetVal = 0;
+
+    char szDestIp[128];
+    char szMaskIp[128];
+    char szGatewayIp[128];
+
+    struct in_addr IpAddr;
+    int i;
+```
