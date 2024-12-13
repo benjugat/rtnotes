@@ -1,9 +1,9 @@
 # ----
 # Site
 
-title: Edition Template
-url: "https://long-pig.cloudvent.net"
-baseurl:
+title: Red Team Notes
+#url: "https://benjugat.github.io"
+baseurl: "/rtnotes"
 google_analytics_key:
 show_full_navigation: true
 
