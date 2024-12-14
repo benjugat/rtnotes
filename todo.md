@@ -7,16 +7,18 @@ MALDEV
 	[x] Encrypting 
 	[x] Payload Storage
 	[x] Binary entropy
-	[-] Binary signature
+	[x] Binary improvment
+		- signature
+		-details
 	
 	
 
 - Object enumeration
-	- Processes
-	- Threads
-	- Modules
-	- Handles
-	- Tokens
+	[] Processes
+	[] Threads
+	[] Modules
+	[] Handles
+	[] Tokens
 
 - CODE INJECTION
 	- Basics
