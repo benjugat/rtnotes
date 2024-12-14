@@ -4,8 +4,6 @@ category: 00 - Red Team
 order: 1
 ---
 
-# Red Team
-
 **Red Teaming** is the process of using tactics, techniques and procedures (TTPs) to emulate a real-world threat, with the goal of measuting the effectiveness of the people, processes and technologies used to defend an environment.
 
 *Read Teaming* is often confused with *Penetration Testing*, but there are some key differences.
@@ -18,14 +16,14 @@ On the other hand, red teams have a clear objective defined by the organization,
 A Red Team will emulate a real-life threat to the organization. To challenge the detection and response capabilities, they need to reach the objective without getting caught, part of this is not compromising unnecessarily high-privileged accounts such as Domain Admins.
 
 
-## Operations Security (OPSEC)
+# Operations Security (OPSEC)
 
 *Operations Security*, known as OPSEC is a term originating in the U.S military and adopted by the information security community. It's generally used to describe the ease with which actions can be observerd by enemy intelligence.
 
 From the perspective of a *Red Team*, this would be a measure of how easy your actions can be observed and subsequently interrupted by a *Blue Team*.
 
 
-## Threat Model
+# Threat Model
 
 The role of a *Red Team* is to emulate a genuine threat to the organization. Can vary from low-skilled script kiddies to a more capable and oranised hacktivist group, or even APTs and nation-states.
 
@@ -36,7 +34,7 @@ MITRE ATT&CK is a great source to find these tactics and techniques.
 * [https://attack.mitre.org/matrices/enterprise/](https://attack.mitre.org/matrices/enterprise/)
 
 
-## Breach Model
+# Breach Model
 
 The Breach Model outlines the means by which the red team will gain access to the target environment.
 
