@@ -2,12 +2,14 @@ MALDEV
 
 - BASIS
 	[x] tips and tricks
-	[ ] compilacion and checks
+	[x] compilacion and checks
 	[x] obfuscation
+	[] Encrypting 
+	[] Payload Storage
 	[] Binary entropy
 	[] Binary signature
-	[] Encrypting strings
-	[] Payload Storage
+	
+	
 
 - Object enumeration
 	- Processes
