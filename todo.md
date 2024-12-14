@@ -2,8 +2,8 @@ MALDEV
 
 - BASIS
 	- tips and tricks
+	- compilacion and checks
 	- obfuscation
-	- compilacion
 	- Binary entropy
 	- Binary signature
 	- Encrypting strings
