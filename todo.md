@@ -5,7 +5,7 @@ MALDEV
 	[x] compilacion and checks
 	[x] obfuscation
 	[x] Encrypting 
-	[] Payload Storage
+	[-] Payload Storage
 	[] Binary entropy
 	[] Binary signature
 	
