@@ -1,6 +1,6 @@
 ---
 title: Application Whitelisting
-category: Red Team
+category: 00 - Red Team
 order: 15
 ---
 

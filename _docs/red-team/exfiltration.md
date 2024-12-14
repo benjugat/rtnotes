@@ -1,6 +1,6 @@
 ---
 title: Exfiltration
-category: Red Team
+category: 00 - Red Team
 order: 16
 ---
 

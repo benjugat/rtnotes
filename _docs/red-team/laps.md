@@ -1,6 +1,6 @@
 ---
 title: Local Administrator Password Solution (LAPS)
-category: Red Team
+category: 00 - Red Team
 order: 13
 ---
 
