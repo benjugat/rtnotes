@@ -14,7 +14,7 @@ MALDEV
 	
 
 - Object enumeration
-	[] Processes
+	[x] Processes
 	[] Threads
 	[] Modules
 	[] Handles
