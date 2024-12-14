@@ -4,7 +4,7 @@ MALDEV
 	[x] tips and tricks
 	[x] compilacion and checks
 	[x] obfuscation
-	[] Encrypting 
+	[x] Encrypting 
 	[] Payload Storage
 	[] Binary entropy
 	[] Binary signature
