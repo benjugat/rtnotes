@@ -15,7 +15,6 @@ MALDEV
 
 - Object enumeration
 	[x] Processes
-	[] Threads
 	[] Modules
 	[] Handles
 	[] Tokens
@@ -67,3 +66,8 @@ MALDEV
 	- Hiding Data - ADS
 	- Hiding Data - Registry Hives
 	- Hiding Data - Extended Atributes
+
+- User Impersonation
+	- Playing with tokens
+
+	
