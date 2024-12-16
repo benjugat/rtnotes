@@ -11,13 +11,10 @@ MALDEV
 		- signature
 		-details
 	
-	
-
 - Object enumeration
 	[x] Processes
-	[] Modules
-	[] Handles
-	[] Tokens
+	[x] Modules
+	[x] Handles
 
 - CODE INJECTION
 	- Basics
@@ -36,6 +33,7 @@ MALDEV
 	- COFF Loader
 	- AppInit
 
+
 - Low Priv - EVASION
 	- Call Obfuscation
 	- Process Hiding
@@ -52,13 +50,13 @@ MALDEV
 	- Silencing ETW
 	- Sandbox Evasion
 
+
 - High Priv - EVASION
 	- Blinding EventLog
 	- Blocking EDR/AV Communications
 		- Firewall rules
 		- Routing table
 	- Disabling Sysmon
-
 
 
 - AntiForsensic
@@ -70,4 +68,3 @@ MALDEV
 - User Impersonation
 	- Playing with tokens
 
-	
