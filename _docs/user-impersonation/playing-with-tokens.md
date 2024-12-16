@@ -228,3 +228,5 @@ int ListHandleToken(HANDLE hDup){
     return 0;
 }
 ```
+
+![](/rtnotes/images/abusetokens.png)
