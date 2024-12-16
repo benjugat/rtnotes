@@ -4,20 +4,14 @@ category: User Impersonation
 order: 1
 ---
 
-An access token in Windows is a data structure used by the operating system to represent the security context of a process or thread. 
+An access token in Windows is a data structure used by the operating system to represent the security context of a process or thread. It contains information about the identity and privileges of the user or entity associated with the process or thread. Access tokens are essential for managing access control and ensuring security within the Windows environment.
 
-It contains information about the identity and privileges of the user or entity associated with the process or thread. 
+Abuse of certain tokens allows an attacker to either escalate privileges on the system or even impersonate users to move laterally across the network.
 
-Access tokens are essential for managing access control and ensuring security within the Windows environment.
+Key features of an Access Token:
 
-Key Features of an Access Token
-
-*  User Identity:
-Identifies the user account associated with the token, usually by a Security Identifier (SID).
-
-* Privileges:
-
-Lists the special rights or abilities assigned to the user or the process.
+* **User Identity**: Identifies the user account associated with the token, usually by a Security Identifier (SID).
+* **Privileges**: Lists the special rights or abilities assigned to the user or the process.
 
 ```
 SeCreateTokenPrivilege
@@ -46,29 +40,12 @@ SeManageVolumePrivilege
 SeImpersonatePrivilege
 ```
 
-* Groups:
-
-Specifies the groups to which the user belongs (e.g., `Administrators`, `Users`, `Guests`).
-
-* Default Owner:
-
-Indicates the default owner for objects created by the process or thread.
-
-* Security Descriptors:
-
-Defines how access to objects (like files or registry keys) is granted or denied based on the token.
-
-* Token Type:
-
-Indicates whether the token is a `primary token` (used by a process) or an `impersonation` token (used by a thread to assume a different security context temporarily).
-
-* Source Information:
-
-Contains details about the source of the token, such as the process or service that created it.
-
-* Session ID:
-
-Links the token to the user's logon session.
+* **Groups**: Specifies the groups to which the user belongs (e.g., `Administrators`, `Users`, `Guests`).
+* **Default Owner**: Indicates the default owner for objects created by the process or thread.
+* **Security Descriptors**: Defines how access to objects (like files or registry keys) is granted or denied based on the token.
+* **Token Type**: Indicates whether the token is a `primary token` (used by a process) or an `impersonation` token (used by a thread to assume a different security context temporarily).
+* **Source Information**: Contains details about the source of the token, such as the process or service that created it.
+* **Session ID**: Links the token to the user's logon session.
 
 
 If we achieve a user with `SeImpersonationPrivilege` which normally is enabled on services accounts, or we already pwned a local Administrator, we can Impersonate a logged on user.
