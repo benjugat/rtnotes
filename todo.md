@@ -9,7 +9,7 @@ MALDEV
 	[x] Binary entropy
 	[x] Binary improvment
 		- signature
-		-details
+		- details
 	
 - Object enumeration
 	[x] Processes
@@ -66,5 +66,5 @@ MALDEV
 	- Hiding Data - Extended Atributes
 
 - User Impersonation
-	- Playing with tokens
+	[x] Playing with tokens
 
