@@ -17,17 +17,18 @@ MALDEV
 	[x] Handles
 
 - CODE INJECTION
-	- Basics
-		- VirtualAlloc
-		- Remote Process
-		- Threat context
-		- SEctions and view
-		- No CreateThread (direct function pointer, enumthreadwindows, enumchildwindows)
-	- Early Bird
+	[] Basics
+		[x] VirtualAlloc
+		[x] Remote Process
+		[x] Threat context
+		[ ] SEctions and view
+		[ ] No CreateThread (direct function pointer, enumthreadwindows, enumchildwindows)
+
+	- Dll Injection
+	- Early Bird (APC Call)
 	- ApiRecall
 	- sRDI
 	- Hooking
-	- Dll Injection
 	- Dll Hijacking
 	- Dll Hollowing / Module Stomping
 	- COFF Loader
