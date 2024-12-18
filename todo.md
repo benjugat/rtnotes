@@ -21,18 +21,21 @@ MALDEV
 		[x] VirtualAlloc
 		[x] Remote Process
 		[x] Threat context
-		[ ] SEctions and view
 		[ ] No CreateThread (direct function pointer, enumthreadwindows, enumchildwindows)
+	[x] Sections and view	
+	[ ] Dll Injection
+	[ ] Early Bird (APC Call)
+	[ ] ApiRecall
+	[ ] sRDI
+	[ ] Dll Hijacking
+	[ ] Dll Hollowing / Module Stomping
+	[ ] COFF Loader
+	
 
-	- Dll Injection
-	- Early Bird (APC Call)
-	- ApiRecall
-	- sRDI
-	- Hooking
-	- Dll Hijacking
-	- Dll Hollowing / Module Stomping
-	- COFF Loader
-	- AppInit
+- Hooking
+	- [ ] AppInit
+	- [ ] Detour
+	- [ ] Modifying IAT 
 
 
 - Low Priv - EVASION
