@@ -17,13 +17,13 @@ MALDEV
 	[x] Handles
 
 - CODE INJECTION
-	[] Basics
+	[x] Basics
 		[x] VirtualAlloc
 		[x] Remote Process
 		[x] Threat context
-		[ ] No CreateThread (direct function pointer, enumthreadwindows, enumchildwindows)
+		[x] No CreateThread (direct function pointer, enumthreadwindows, enumchildwindows)
 	[x] Sections and view	
-	[ ] Dll Injection
+	[x] Dll Injection
 	[ ] Early Bird (APC Call)
 	[ ] ApiRecall
 	[ ] sRDI
