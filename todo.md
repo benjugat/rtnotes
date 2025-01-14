@@ -24,17 +24,18 @@ MALDEV
 		[x] No CreateThread (direct function pointer, enumthreadwindows, enumchildwindows)
 	[x] Sections and view	
 	[x] Dll Injection
-	[ ] Early Bird (APC Call)
-	[ ] ApiRecall
+	[x] Early Bird (APC Call)
 	[ ] sRDI
 	[ ] Dll Hijacking
 	[ ] Dll Hollowing / Module Stomping
+	[ ] Dll SideLoading
 	[ ] COFF Loader
+	[ ] ApiRekall
 	
 
 - Hooking
-	- [ ] AppInit
 	- [ ] Detour
+	- [ ] AppInit
 	- [ ] Modifying IAT 
 
 
