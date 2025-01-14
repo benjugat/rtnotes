@@ -25,7 +25,7 @@ MALDEV
 	[x] Sections and view	
 	[x] Dll Injection
 	[x] Early Bird (APC Call)
-	[ ] sRDI
+	[x] sRDI
 	[ ] Dll Hijacking
 	[ ] Dll Hollowing / Module Stomping
 	[ ] Dll SideLoading
