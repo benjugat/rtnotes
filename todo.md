@@ -34,7 +34,7 @@ MALDEV
 	
 
 - Hooking
-	- [ ] Detour
+	- [x] Detour
 	- [ ] AppInit
 	- [ ] Modifying IAT 
 
