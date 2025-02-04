@@ -10,6 +10,7 @@ MALDEV
 	[x] Binary improvment
 		- signature
 		- details
+	[x] IAT Parser
 	
 - Object enumeration
 	[x] Processes
