@@ -3,7 +3,6 @@ MALDEV
 - BASIS
 	[x] tips and tricks
 	[x] compilacion and checks
-	[x] obfuscation
 	[x] Encrypting 
 	[x] Payload Storage
 	[x] Binary entropy
@@ -30,46 +29,47 @@ MALDEV
 	[ ] Dll Hijacking
 	[ ] Dll Hollowing / Module Stomping
 	[ ] Dll SideLoading
-	[ ] COFF Loader
-	[ ] ApiRekall
+	[?] COFF Loader
+	[?] ApiRekall
 	
 
 - Hooking
 	- [x] Detour
 	- [x] AppInit
-	- [ ] Modifying IAT 
+	- [x] Modifying IAT 
 
 
 - Low Priv - EVASION
-	- Call Obfuscation
-	- Process Hiding
-		- Gargoyle
-		- Ekko
-		- NinjaSploit
-		- MapBlinker
-	- PPID Spoofing
-	- Prevent 3rd Party dll to be loaded
-	- Unhooking - Halo's Gate
-	- Unhooking - Fresh copy
-	- Unhooking - Perun-s Fart
-	- cmdline arguments spoofing
-	- Silencing ETW
-	- Sandbox Evasion
+	[x] Call Obfuscation
+	[ ] Process Hiding
+		[ ] Gargoyle
+		[ ] Ekko
+		[ ] NinjaSploit
+		[ ] MapBlinker
+	[ ] PPID Spoofing
+	[ ] Prevent 3rd Party dll to be loaded
+	[ ] Unhooking
+		- Halo's Gate
+		- Fresh copy
+		- Perun-s Fart
+	[ ] cmdline arguments spoofing
+	[ ] Silencing ETW
+	[ ] Sandbox Evasion
 
 
 - High Priv - EVASION
-	- Blinding EventLog
-	- Blocking EDR/AV Communications
-		- Firewall rules
-		- Routing table
-	- Disabling Sysmon
+	[ ] Blinding EventLog
+	[ ] Blocking EDR/AV Communications
+		[ ] Firewall rules
+		[ ] Routing table
+	[ ] Disabling Sysmon
 
 
 - AntiForsensic
-	- Timestomping
-	- Hiding Data - ADS
-	- Hiding Data - Registry Hives
-	- Hiding Data - Extended Atributes
+	[ ] Timestomping
+	[ ] Hiding Data - ADS
+	[ ] Hiding Data - Registry Hives
+	[ ] Hiding Data - Extended Atributes
 
 - User Impersonation
 	[x] Playing with tokens
