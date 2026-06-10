@@ -1,68 +1,118 @@
-# Edition [ LEGACY TEMPLATE NO LONGER MAINTAINED ]
+# Red Team Notes
 
-Product documentation template for Jekyll. Browse through a [live demo](https://long-pig.cloudvent.net/).
-Start documenting your product, application, service or website with this configurable theme.
+Personal field notebook for **offensive security operators**: red team
+operations, C2 tradecraft, Windows internals, malware development, and
+Active Directory abuse.
 
-![Edition template screenshot](images/_screenshot.png)
+The site is built with **[MkDocs](https://www.mkdocs.org/)** using
+**[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)** and is
+automatically deployed to **GitHub Pages** on every push to `main`.
 
-Edition was made by [CloudCannon](http://cloudcannon.com/), the Cloud CMS for Jekyll.
+> Live site: <https://benjugat.github.io/rtnotes/>
 
-Find more templates, themes and step-by-step Jekyll tutorials at [CloudCannon Academy](https://learn.cloudcannon.com/).
+## Stack
 
-[![Deploy to CloudCannon](https://buttons.cloudcannon.com/deploy.svg)](https://app.cloudcannon.com/register#sites/connect/github/CloudCannon/edition-jekyll-template)
+- **Generator**: MkDocs 1.6+
+- **Theme**: Material for MkDocs 9.5+
+- **Markdown extensions**: admonition, superfences, tabbed, highlight,
+  inlinehilite, snippets, tasklist, emoji, details, attr_list, def_list, tables
+- **Deploy**: GitHub Actions → `actions/deploy-pages` (no `gh-pages` branch)
+- **Search**: Native (lunr via Material)
 
-## Features
+## Local development
 
-* Two column layout
-* Full text search
-* Pre-styled components
-* Auto-generated navigation based on category
-* Optimised for editing in [CloudCannon](http://cloudcannon.com/)
-* Change log
-* RSS/Atom feed
-* SEO tags
-* Google Analytics
+### 1. Install Python
 
-## Setup
+Any Python ≥ 3.9 is fine.
 
-1. Add your site and author details in `_config.yml`.
-2. Get a workflow going to see your site's output (with [CloudCannon](https://app.cloudcannon.com/) or Jekyll locally).
+### 2. Install dependencies
 
-## Develop
+```bash
+python -m pip install -r requirements.txt
+```
 
-Edition was built with [Jekyll](http://jekyllrb.com/) version 3.3.1, but should support newer versions as well.
+### 3. Serve the site locally
 
-Install the dependencies with [Bundler](http://bundler.io/):
+```bash
+python -m mkdocs serve
+```
 
-~~~bash
-$ bundle install
-~~~
+Open <http://127.0.0.1:8000/rtnotes/> in your browser. The dev server
+auto-reloads on every change to `docs/` or `mkdocs.yml`.
 
-Run `jekyll` commands through Bundler to ensure you're using the right versions:
+> The trailing `/rtnotes/` is required because the site is served under
+> `/<repo>/` on GitHub Pages. Material honours `site_url` to compute correct
+> asset paths in local dev.
 
-~~~bash
-$ bundle exec jekyll serve
-~~~
+### 4. Build a static site
 
-## Editing
+```bash
+python -m mkdocs build
+```
 
-Edition is already optimised for adding, updating and removing documentation pages in CloudCannon.
+Output goes to `site/` (gitignored). The contents of `site/` are exactly what
+GitHub Pages will serve.
 
-### Documentation pages
+## Project layout
 
-* Add, update or remove a documentation page in the *Documentation* collection.
-* Change the category of a documentation page to move it to another section in the navigation.
-* Documentation pages are organised in the navigation by category, with URLs based on the path inside the `_docs` folder.
+```
+.
+├── .github/workflows/ci.yml     # GitHub Pages deploy
+├── docs/                        # All Markdown content
+│   ├── index.md                 # Home page
+│   ├── changelog.md             # This changelog (rendered)
+│   ├── red-team/                # Red Team section
+│   ├── malware/                 # Malware Development section
+│   │   ├── basics/
+│   │   ├── code-injection/
+│   │   ├── hooking/
+│   │   ├── lowpriv-evasion/
+│   │   └── object-enumeration/
+│   └── images/                  # All static assets
+├── mkdocs.yml                   # MkDocs configuration
+├── requirements.txt             # Python dependencies
+├── MIGRATION_TO_MKDOCS.md       # Migration report (Jekyll → MkDocs)
+├── robots.txt
+├── LICENSE
+└── README.md
+```
 
-### Change log
+## Adding a new page
 
-* Add, update or remove change log entries from your posts.
-* Tag entries as minor or major in the front matter.
+1. Create a new `.md` file under the appropriate section, e.g.
+   `docs/red-team/new-topic.md`.
+2. Add a `title` and short `description` in the front matter:
 
-### Search
+   ```markdown
+   ---
+   title: New Topic
+   description: One-liner that shows up in search and meta tags.
+   ---
 
-* Add `excluded_in_search: true` to any documentation page's front matter to exclude that page in the search results.
+   # New Topic
 
-### Navigation
+   Content here.
+   ```
 
-* Change `site.show_full_navigation` to control all or only the current navigation group being open.
+3. Register the page in the `nav:` block of `mkdocs.yml` so it appears in the
+   sidebar.
+4. Reference images as relative paths, e.g. `../images/foo.png` from
+   `docs/red-team/whatever.md`, or `images/foo.png` from `docs/index.md`.
+
+## Deploying
+
+Pushing to `main` triggers `.github/workflows/ci.yml`, which:
+
+1. Installs the dependencies.
+2. Runs `mkdocs build` to produce `site/`.
+3. Uploads `site/` as a Pages artifact.
+4. Deploys it to GitHub Pages.
+
+> **One-time setup**: In the repository settings, go to
+> **Pages → Build and deployment → Source** and select **GitHub Actions**.
+> If it was previously set to "Deploy from a branch" or to CloudCannon,
+> change it to GitHub Actions to start receiving the workflow output.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).

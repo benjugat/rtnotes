@@ -1,0 +1,131 @@
+site_name: Red Team Notes
+site_description: Red teaming and malware development notes for offensive security operators.
+site_author: benjugat
+
+site_url: https://benjugat.github.io/rtnotes/
+
+
+docs_dir: docs
+site_dir: site
+
+use_directory_urls: true
+strict: false
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - toc.follow
+    - content.code.copy
+    - content.tabs.link
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+    - search.share
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: red
+      accent: red
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/shield-half-full
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/benjugat
+  generator: false
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Red Team:
+      - Introduction: red-team/introduction.md
+      - OPSEC Infrastructure: red-team/opsec-infrastructure.md
+      - C2 - Cobalt Strike: red-team/c2-cobaltstrike.md
+      - Host Reconnaissance: red-team/host-reconnaissance.md
+      - Host Persistence: red-team/host-persistence.md
+      - Host Privilege Escalation: red-team/host-privilege-escalation.md
+      - Lateral Movement: red-team/lateral-movement.md
+      - Credentials & User Impersonation: red-team/credentials-and-user-impersonation.md
+      - Playing with Tokens: red-team/playing-with-tokens.md
+      - Kibana - The Security App: red-team/kibana.md
+      - Pivoting: red-team/pivoting.md
+      - MS SQL Servers: red-team/ms-sql-servers.md
+      - Data Protection API (DPAPI): red-team/data-protection-api.md
+      - LAPS: red-team/laps.md
+      - Microsoft Defender Antivirus: red-team/microsoft-defender.md
+      - Application Whitelisting: red-team/application-whitelisting.md
+      - Exfiltration: red-team/exfiltration.md
+  - Malware Development:
+      - Basics:
+          - Tips and Tricks: malware/basics/tips.md
+          - Compilation and Checks: malware/basics/compilation.md
+          - Encrypting: malware/basics/encrypting.md
+          - Payload Storage: malware/basics/data-stoarge.md
+          - Binary Entropy: malware/basics/binary-entropy.md
+          - Binary Improvements: malware/basics/binary-improvements.md
+          - IAT Parser: malware/basics/iat-parser.md
+      - Code Injection:
+          - Introduction: malware/code-injection/intro.md
+          - Sections and Views: malware/code-injection/section-views.md
+          - DLL Injection: malware/code-injection/dll-injection.md
+          - APC Injection: malware/code-injection/APC-injection.md
+          - Early Bird (APC Calls): malware/code-injection/early-bird.md
+          - Shellcode Reflective DLL Injection (sRDI): malware/code-injection/srdi.md
+      - Hooking:
+          - Detour: malware/hooking/detour.md
+          - IAT Hooking: malware/hooking/iat-hooking.md
+          - AppInit: malware/hooking/appinit.md
+      - Low Priv Evasion:
+          - Function Call Obfuscation: malware/lowpriv-evasion/call-obfuscation.md
+          - PPID Spoofing: malware/lowpriv-evasion/ppid-spoofing.md
+      - Object Enumeration:
+          - Process Enumeration: malware/object-enumeration/processes.md
+          - Thread Enumeration: malware/object-enumeration/threads.md
+          - Module Enumeration: malware/object-enumeration/modules.md
+          - Handle Enumeration: malware/object-enumeration/handle.md
