@@ -1,7 +1,4 @@
----
-layout: null
-sitemap: false
----
 User-agent: *
-Sitemap: {{ site.url }}/sitemap.xml
-Disallow: /search/
+Allow: /
+
+Sitemap: https://benjugat.github.io/rtnotes/sitemap.xml
