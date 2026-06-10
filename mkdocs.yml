@@ -3,9 +3,7 @@ site_description: Red teaming and malware development notes for offensive securi
 site_author: benjugat
 
 site_url: https://benjugat.github.io/rtnotes/
-repo_url: https://github.com/benjugat/rtnotes
-repo_name: benjugat/rtnotes
-edit_uri: edit/main/docs/
+
 
 docs_dir: docs
 site_dir: site
@@ -85,7 +83,6 @@ plugins:
 
 nav:
   - Home: index.md
-  - Changelog: changelog.md
   - Red Team:
       - Introduction: red-team/introduction.md
       - OPSEC Infrastructure: red-team/opsec-infrastructure.md
