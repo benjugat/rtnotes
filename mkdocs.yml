@@ -1,6 +1,7 @@
 site_name: Red Team Notes
 site_description: Red teaming and malware development notes for offensive security operators.
 site_author: benjugat
+copyright: ""
 
 site_url: https://benjugat.github.io/rtnotes/
 
@@ -8,8 +9,8 @@ site_url: https://benjugat.github.io/rtnotes/
 docs_dir: docs
 site_dir: site
 
-use_directory_urls: true
-strict: false
+exclude_docs: |
+  README.md
 
 theme:
   name: material
@@ -45,13 +46,18 @@ theme:
         name: Switch to light mode
   icon:
     repo: fontawesome/brands/github
-    logo: material/shield-half-full
+    edit: material/pencil
+  favicon: images/favicon.png
+  logo: images/logo_rtnotes.png
 
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/benjugat
   generator: false
+
+extra_css:
+  - css/extra.css
 
 markdown_extensions:
   - admonition
@@ -79,53 +85,68 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 plugins:
-  - search
+  - search:
+      lang: en
+      separator: '[\s\-\.\_]+'
+
+use_directory_urls: true
+
+validation:
+  nav:
+    omitted_files: ignore
+    not_found: warn
+    absolute_links: ignore
+  links:
+    not_found: ignore
+    absolute_links: ignore
+    unrecognized_links: ignore
 
 nav:
   - Home: index.md
+
   - Red Team:
-      - Introduction: red-team/introduction.md
-      - OPSEC Infrastructure: red-team/opsec-infrastructure.md
-      - C2 - Cobalt Strike: red-team/c2-cobaltstrike.md
-      - Host Reconnaissance: red-team/host-reconnaissance.md
-      - Host Persistence: red-team/host-persistence.md
-      - Host Privilege Escalation: red-team/host-privilege-escalation.md
-      - Lateral Movement: red-team/lateral-movement.md
-      - Credentials & User Impersonation: red-team/credentials-and-user-impersonation.md
-      - Playing with Tokens: red-team/playing-with-tokens.md
-      - Kibana - The Security App: red-team/kibana.md
-      - Pivoting: red-team/pivoting.md
-      - MS SQL Servers: red-team/ms-sql-servers.md
-      - Data Protection API (DPAPI): red-team/data-protection-api.md
-      - LAPS: red-team/laps.md
-      - Microsoft Defender Antivirus: red-team/microsoft-defender.md
-      - Application Whitelisting: red-team/application-whitelisting.md
-      - Exfiltration: red-team/exfiltration.md
+      - red-team/introduction.md
+      - red-team/opsec-infrastructure.md
+      - red-team/c2-cobaltstrike.md
+      - red-team/host-reconnaissance.md
+      - red-team/host-persistence.md
+      - red-team/host-privilege-escalation.md
+      - red-team/lateral-movement.md
+      - red-team/credentials-and-user-impersonation.md
+      - red-team/playing-with-tokens.md
+      - red-team/kibana.md
+      - red-team/pivoting.md
+      - red-team/ms-sql-servers.md
+      - red-team/data-protection-api.md
+      - red-team/laps.md
+      - red-team/microsoft-defender.md
+      - red-team/application-whitelisting.md
+      - red-team/exfiltration.md
   - Malware Development:
       - Basics:
-          - Tips and Tricks: malware/basics/tips.md
-          - Compilation and Checks: malware/basics/compilation.md
-          - Encrypting: malware/basics/encrypting.md
-          - Payload Storage: malware/basics/data-stoarge.md
-          - Binary Entropy: malware/basics/binary-entropy.md
-          - Binary Improvements: malware/basics/binary-improvements.md
-          - IAT Parser: malware/basics/iat-parser.md
+          - malware/basics/tips.md
+          - malware/basics/compilation.md
+          - malware/basics/encrypting.md
+          - malware/basics/data-stoarge.md
+          - malware/basics/binary-entropy.md
+          - malware/basics/binary-improvements.md
+          - malware/basics/iat-parser.md
       - Code Injection:
-          - Introduction: malware/code-injection/intro.md
-          - Sections and Views: malware/code-injection/section-views.md
-          - DLL Injection: malware/code-injection/dll-injection.md
-          - APC Injection: malware/code-injection/APC-injection.md
-          - Early Bird (APC Calls): malware/code-injection/early-bird.md
-          - Shellcode Reflective DLL Injection (sRDI): malware/code-injection/srdi.md
+          - malware/code-injection/intro.md
+          - malware/code-injection/section-views.md
+          - malware/code-injection/dll-injection.md
+          - malware/code-injection/APC-injection.md
+          - malware/code-injection/early-bird.md
+          - malware/code-injection/srdi.md
       - Hooking:
-          - Detour: malware/hooking/detour.md
-          - IAT Hooking: malware/hooking/iat-hooking.md
-          - AppInit: malware/hooking/appinit.md
+          - malware/hooking/detour.md
+          - malware/hooking/iat-hooking.md
+          - malware/hooking/appinit.md
       - Low Priv Evasion:
-          - Function Call Obfuscation: malware/lowpriv-evasion/call-obfuscation.md
-          - PPID Spoofing: malware/lowpriv-evasion/ppid-spoofing.md
+          - malware/lowpriv-evasion/call-obfuscation.md
+          - malware/lowpriv-evasion/ppid-spoofing.md
       - Object Enumeration:
-          - Process Enumeration: malware/object-enumeration/processes.md
-          - Thread Enumeration: malware/object-enumeration/threads.md
-          - Module Enumeration: malware/object-enumeration/modules.md
-          - Handle Enumeration: malware/object-enumeration/handle.md
+          - malware/object-enumeration/processes.md
+          - malware/object-enumeration/threads.md
+          - malware/object-enumeration/modules.md
+          - malware/object-enumeration/handle.md
