@@ -138,6 +138,8 @@ nav:
           - malware/code-injection/APC-injection.md
           - malware/code-injection/early-bird.md
           - malware/code-injection/srdi.md
+      - Memory Allocation:
+          - malware/memory-allocation/module-stomping.md
       - Hooking:
           - malware/hooking/detour.md
           - malware/hooking/iat-hooking.md
