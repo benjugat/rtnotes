@@ -53,26 +53,6 @@ reference you can use during an assessment.
 
 </div>
 
-## Project layout
-
-```
-docs/
-├── index.md                # This page
-├── changelog.md            # Build / content changelog
-├── red-team/               # Operations, C2, AD, lateral movement, etc.
-│   ├── introduction.md
-│   ├── opsec-infrastructure.md
-│   ├── c2-cobaltstrike.md
-│   └── ...
-├── malware/                # Windows internals & offensive engineering
-│   ├── basics/
-│   ├── code-injection/
-│   ├── hooking/
-│   ├── lowpriv-evasion/
-│   └── object-enumeration/
-└── images/                 # All static assets
-```
-
 ## Conventions used in the notes
 
 - Code samples are usually C/C++ unless otherwise stated.
