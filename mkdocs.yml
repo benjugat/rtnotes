@@ -148,6 +148,7 @@ nav:
       - Low Priv Evasion:
           - malware/lowpriv-evasion/call-obfuscation.md
           - malware/lowpriv-evasion/ppid-spoofing.md
+          - malware/lowpriv-evasion/stack-spoofing.md
       - Object Enumeration:
           - malware/object-enumeration/processes.md
           - malware/object-enumeration/threads.md
