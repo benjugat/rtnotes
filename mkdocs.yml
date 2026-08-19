@@ -149,6 +149,9 @@ nav:
           - malware/lowpriv-evasion/call-obfuscation.md
           - malware/lowpriv-evasion/ppid-spoofing.md
           - malware/lowpriv-evasion/stack-spoofing.md
+          - malware/lowpriv-evasion/direct-syscalls.md
+          - malware/lowpriv-evasion/halos-gate.md
+          - malware/lowpriv-evasion/indirect-syscalls.md
       - Object Enumeration:
           - malware/object-enumeration/processes.md
           - malware/object-enumeration/threads.md
