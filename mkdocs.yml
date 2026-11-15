@@ -143,6 +143,7 @@ nav:
           - malware/code-injection/early-bird.md
           - malware/code-injection/srdi.md
           - malware/code-injection/fiber-execution.md
+          - malware/code-injection/ddl-sideloading.md
       - Memory Allocation:
           - malware/memory-allocation/module-stomping.md
       - Hooking:
