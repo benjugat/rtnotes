@@ -105,6 +105,7 @@ nav:
   - Home: index.md
 
   - Red Team:
+      - red-team/index.md
       - red-team/introduction.md
       - red-team/opsec-infrastructure.md
       - red-team/c2-cobaltstrike.md
@@ -123,6 +124,7 @@ nav:
       - red-team/application-whitelisting.md
       - red-team/exfiltration.md
   - Malware Development:
+      - malware/index.md
       - Basics:
           - malware/basics/tips.md
           - malware/basics/compilation.md
