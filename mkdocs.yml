@@ -123,6 +123,7 @@ nav:
       - red-team/microsoft-defender.md
       - red-team/application-whitelisting.md
       - red-team/exfiltration.md
+      
   - Malware Development:
       - malware/index.md
       - Basics:
