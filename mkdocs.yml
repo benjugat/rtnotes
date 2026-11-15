@@ -134,7 +134,6 @@ nav:
           - malware/basics/csharp-dropper.md
           - malware/basics/jscript-dropper.md
           - malware/basics/powershell-dropper.md
-
       - Code Injection:
           - malware/code-injection/intro.md
           - malware/code-injection/section-views.md
@@ -143,7 +142,7 @@ nav:
           - malware/code-injection/early-bird.md
           - malware/code-injection/srdi.md
           - malware/code-injection/fiber-execution.md
-          - malware/code-injection/ddl-sideloading.md
+          - malware/code-injection/dll-sideloading.md
       - Memory Allocation:
           - malware/memory-allocation/module-stomping.md
       - Hooking:
