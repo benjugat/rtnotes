@@ -131,6 +131,10 @@ nav:
           - malware/basics/binary-entropy.md
           - malware/basics/binary-improvements.md
           - malware/basics/iat-parser.md
+          - malware/basics/csharp-dropper.md
+          - malware/basics/jscript-dropper.md
+          - malware/basics/powershell-dropper.md
+
       - Code Injection:
           - malware/code-injection/intro.md
           - malware/code-injection/section-views.md
