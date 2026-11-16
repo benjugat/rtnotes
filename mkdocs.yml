@@ -140,6 +140,8 @@ nav:
           - malware/basics/powershell-dropper.md
       - Code Injection:
           - malware/code-injection/intro.md
+          - malware/code-injection/process-injection.md
+          - malware/code-injection/thread-context-injection.md
           - malware/code-injection/section-views.md
           - malware/code-injection/dll-injection.md
           - malware/code-injection/APC-injection.md
