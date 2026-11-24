@@ -139,6 +139,7 @@ nav:
           - malware/basics/jscript-dropper.md
           - malware/basics/powershell-dropper.md
           - malware/basics/amsi.md
+          - malware/basics/uac-bypass.md
       - Code Injection:
           - malware/code-injection/intro.md
           - malware/code-injection/process-injection.md
