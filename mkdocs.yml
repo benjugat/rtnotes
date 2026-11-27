@@ -154,6 +154,7 @@ nav:
           - malware/code-injection/fiber-execution.md
           - malware/code-injection/dll-sideloading.md
           - malware/code-injection/process-hollowing.md
+          - malware/code-injection/shared-library-hijacking.md
       - Memory Allocation:
           - malware/memory-allocation/module-stomping.md
       - Hooking:

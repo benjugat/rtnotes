@@ -127,11 +127,19 @@ First such as PowerView we need to import the module.
 Import-Module .\LAPSToolit.ps1
 ```
 
-`Find-LAPSDelegatedGroups` will query each OU and find domain groups that have delegated read access
+`Get-LAPSComputers` will query each Computer to find which has LAPS enabled.
+
+```powershell
+Get-LAPSComputers
+```
+
+`Find-LAPSDelegatedGroups` will query each OU and find domain groups that have delegated read access.
 
 ```powershell
 Find-LAPSDelegatedGroups
 ```
+
+> **Note**: If `Find-LAPSDelegatedGroups` is executed with a user that has read rights over laps will display the password in plaintext.
 
 `Find-AdmPwdExtendedRights` goes a little deeper and queries each individual computer for users that have "All Extended Rights". This will reveal any users that can read the attribute without havind had it specifically delegated to them.
 
