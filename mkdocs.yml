@@ -116,7 +116,6 @@ nav:
       - red-team/host-privilege-escalation.md
       - red-team/lateral-movement.md
       - red-team/credentials-and-user-impersonation.md
-      - red-team/playing-with-tokens.md
       - red-team/kibana.md
       - red-team/pivoting.md
       - red-team/ms-sql-servers.md
@@ -174,3 +173,6 @@ nav:
           - malware/object-enumeration/threads.md
           - malware/object-enumeration/modules.md
           - malware/object-enumeration/handle.md
+      - Other Techniques:
+          - malware/techniques/minidump.md
+          - malware/techniques/playing-with-tokens.md
